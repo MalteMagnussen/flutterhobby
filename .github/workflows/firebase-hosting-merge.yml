@@ -16,7 +16,7 @@ jobs:
         with:
           flutter-version: '2.x'
       - run: flutter pub get
-      - run: flutter test
+      #- run: flutter test
       - run: flutter build web
       - run: cp -R build/web/* firebase/public/
 
