@@ -19,7 +19,7 @@ Future<PersonsAge> fetchPersonsCountry(PersonsAge person) async {
 Future<http.Response> fetchAge(PersonsAge person) {
   return http.get(
     Uri.parse(
-        'https://api.agify.io/?name${person.name}&country_id=${person.country}'),
+        'https://api.agify.io/?name=${person.name}&country_id=${person.country}'),
   );
 }
 
