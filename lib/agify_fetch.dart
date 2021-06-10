@@ -33,8 +33,18 @@ Future<PersonsAge> fetchPersonsAge(PersonsAge person) async {
   }
 }
 
+// https://restcountries.eu/rest/v2/alpha/dk
+Future<http.Response> fetchCountryName(String country) {
+  return http.get(
+    Uri.parse('https://restcountries.eu/rest/v2/alpha/$country'),
+  );
+}
+
 Future<PersonsAge> fetchPerson(String name) async {
   PersonsAge person = PersonsAge.name(name);
   person = await fetchPersonsCountry(person);
-  return await fetchPersonsAge(person);
+  final countryNameResponse = await fetchCountryName(person.country);
+  Country country = Country.fromJson(jsonDecode(countryNameResponse.body));
+  person = await fetchPersonsAge(person);
+  return PersonsAge(person.name, country.country, person.age);
 }

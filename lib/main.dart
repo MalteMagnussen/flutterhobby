@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Malte Hviid-Magnussen',
+      title: "Malte Hviid-Magnussen",
       theme: ThemeData.dark(),
       home: const MyHomePage(),
     );
@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Malte Hviid-Magnussen'),
+        title: const Text("Malte Hviid-Magnussen - Hobby Projects"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -76,30 +76,55 @@ class _MyHomePageState extends State<MyHomePage> {
                       setState(() {
                         loading = true;
                       });
-                      PersonsAge tempPerson = await fetchPerson(value);
-                      setState(() {
-                        person = tempPerson;
-                        loading = false;
-                      });
-                      await showDialog<void>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Your name is $value!'),
-                            content: Text(
-                              "Your age is ${person.age} and you're from ${person.country}!",
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('OK'),
+                      try {
+                        PersonsAge tempPerson = await fetchPerson(value);
+                        setState(() {
+                          person = tempPerson;
+                          loading = false;
+                        });
+                        await showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Your name is $value!'),
+                              content: Text(
+                                "Your age is ${person.age} and you're from ${person.country}!",
                               ),
-                            ],
-                          );
-                        },
-                      );
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } on Exception {
+                        await showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Wow, your name is unique!'),
+                              content: const Text(
+                                "No one else is named that in the database.",
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                     },
                   ),
                 )
