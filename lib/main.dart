@@ -29,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late TextEditingController _controller;
   late PersonsAge person;
+  bool loading = false;
 
   @override
   void initState() {
@@ -49,48 +50,61 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Malte Hviid-Magnussen'),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(
+          const Center(
             child: Text(
-              "Type in your name below, and I'll tell you what country you're from, and how old you are.",
+              "I can guess your age and country!\nTry it out!",
               textAlign: TextAlign.center,
+              style: TextStyle(height: 2),
             ),
           ),
-          TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Input your Name',
-            ),
-            onSubmitted: (String value) async {
-              setState(() async {
-                person = await fetchPerson(value);
-              });
-              await showDialog<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('Your name is $value!'),
-                    content: Text(
-                      "Your age is ${person.age} and you're from ${person.country}!",
+          SizedBox(
+            height: 50,
+          ),
+          loading
+              ? const CircularProgressIndicator()
+              : SizedBox(
+                  width: 300,
+                  child: TextField(
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Input your Name',
                     ),
-                    actions: <Widget>[
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
+                    onSubmitted: (String value) async {
+                      setState(() {
+                        loading = true;
+                      });
+                      PersonsAge tempPerson = await fetchPerson(value);
+                      setState(() {
+                        person = tempPerson;
+                        loading = false;
+                      });
+                      await showDialog<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Your name is $value!'),
+                            content: Text(
+                              "Your age is ${person.age} and you're from ${person.country}!",
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
                         },
-                        child: const Text('OK'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          )
+                      );
+                    },
+                  ),
+                )
         ],
       ),
-
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
