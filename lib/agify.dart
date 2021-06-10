@@ -19,8 +19,8 @@ class PersonsAge {
   factory PersonsAge.fromJsonAgify(Map<String, dynamic> json) {
     return PersonsAge(
       json['name'],
-      json['age'],
       json['country_id'],
+      json['age'],
     );
   }
 }
