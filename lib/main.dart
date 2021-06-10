@@ -73,10 +73,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       labelText: 'Input your Name',
                     ),
                     onSubmitted: (String value) async {
+                      value = value.trim();
                       setState(() {
                         loading = true;
                       });
                       try {
+                        if (value.length < 2) {
+                          throw Exception(
+                              "Name has to be longer than 2 characters.");
+                        }
                         PersonsAge tempPerson = await fetchPerson(value);
                         setState(() {
                           person = tempPerson;
@@ -131,5 +136,62 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     );
+  }
+
+  Future<void> onSubmit(String value, BuildContext context) async {
+    {
+      setState(() {
+        loading = true;
+      });
+      try {
+        PersonsAge tempPerson = await fetchPerson(value);
+        setState(() {
+          person = tempPerson;
+          loading = false;
+        });
+        await showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Your name is $value!'),
+              content: Text(
+                "Your age is ${person.age} and you're from ${person.country}!",
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } on Exception {
+        await showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Wow, your name is unique!'),
+              content: const Text(
+                "No one else is named that in the database.",
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      loading = false;
+                    });
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
   }
 }
