@@ -33,7 +33,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: const Center(
         child: Text(
-          "Type in your name below, and I'll tell you your age.",
+          "Type in your name below, and I'll tell you what country you're from, and how old you are.",
+          textAlign: TextAlign.center,
         ),
       ),
 
