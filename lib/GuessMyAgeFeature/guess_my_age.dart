@@ -6,7 +6,7 @@ import 'agify_fetch.dart';
 class GuessMyAgeWidget extends StatefulWidget {
   const GuessMyAgeWidget({Key? key}) : super(key: key);
   @override
-  State<GuessMyAgeWidget> createState() => _GuessMyAgeController();
+  _GuessMyAgeController createState() => _GuessMyAgeController();
 }
 
 class _GuessMyAgeController extends State<GuessMyAgeWidget> {
@@ -35,8 +35,8 @@ class _GuessMyAgeController extends State<GuessMyAgeWidget> {
 
   void handleLoading(bool _loading) => setState(() => loading = _loading);
   void setPerson(PersonsAge _person) => setState(() => person = _person);
-  void _fetchPerson() async {
-    setPerson(await fetchPerson(personsName, country));
+  Future<PersonsAge> _fetchPerson() async {
+    return await fetchPerson(personsName, country);
   }
 
   void handleChangePersonsName(String name) =>
@@ -61,12 +61,13 @@ class _GuessMyAgeController extends State<GuessMyAgeWidget> {
     });
   }
 
-  void handleSubmit() {
+  Future<void> handleSubmit() async {
     handleLoading(true);
     verifyName();
     verifyCountry();
-    _fetchPerson();
+    PersonsAge _person = await _fetchPerson();
     handleLoading(false);
+    setPerson(_person);
   }
 
   @override
@@ -75,7 +76,7 @@ class _GuessMyAgeController extends State<GuessMyAgeWidget> {
 
 class _GuessMyAgeView
     extends WidgetView<GuessMyAgeWidget, _GuessMyAgeController> {
-  const _GuessMyAgeView(_GuessMyAgeController state) : super(state);
+  _GuessMyAgeView(_GuessMyAgeController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +138,7 @@ class _GuessMyAgeView
                         color: Theme.of(context).colorScheme.onPrimary,
                         onPressed: () async {
                           try {
-                            state.handleSubmit();
+                            await state.handleSubmit();
                             await showDialog<void>(
                               context: context,
                               builder: (BuildContext context) {
