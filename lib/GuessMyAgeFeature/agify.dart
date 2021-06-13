@@ -39,4 +39,10 @@ class Country {
       country: json['name'],
     );
   }
+
+  factory Country.fromJsonCountry(List<dynamic> json) {
+    return Country(
+      country: json[0]['alpha2Code'],
+    );
+  }
 }

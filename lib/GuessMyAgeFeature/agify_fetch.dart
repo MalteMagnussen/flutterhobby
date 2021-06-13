@@ -40,11 +40,25 @@ Future<http.Response> fetchCountryName(String country) {
   );
 }
 
-Future<PersonsAge> fetchPerson(String name) async {
-  PersonsAge person = PersonsAge.name(name);
-  person = await fetchPersonsCountry(person);
-  final countryNameResponse = await fetchCountryName(person.country);
-  Country country = Country.fromJson(jsonDecode(countryNameResponse.body));
-  person = await fetchPersonsAge(person);
-  return PersonsAge(person.name, country.country, person.age);
+// https://restcountries.eu/rest/v2/name/Danmark
+Future<http.Response> fetchCountryCode(String country) {
+  return http.get(
+    Uri.parse('https://restcountries.eu/rest/v2/name/$country'),
+  );
+}
+
+Future<Country> fetchPersonsCountryCode(String country) async {
+  final agifyResponse = await fetchCountryCode(country);
+  if (agifyResponse.statusCode == 200) {
+    // If the server sent a fine response
+    return Country.fromJsonCountry(jsonDecode(agifyResponse.body));
+  } else {
+    throw Exception("Failed to fetch countrycode.");
+  }
+}
+
+Future<PersonsAge> fetchPerson(String name, String countryString) async {
+  Country countryCode = await fetchPersonsCountryCode(countryString);
+  PersonsAge person = PersonsAge.nameCountry(name, countryCode.country);
+  return await fetchPersonsAge(person);
 }
