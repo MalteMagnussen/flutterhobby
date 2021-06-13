@@ -35,8 +35,10 @@ class _GuessMyAgeController extends State<GuessMyAgeWidget> {
 
   void handleLoading(bool _loading) => setState(() => loading = _loading);
   void setPerson(PersonsAge _person) => setState(() => person = _person);
-  Future<PersonsAge> _fetchPerson() async {
-    return await fetchPerson(personsName, country);
+  Future<void> _fetchPerson() async {
+    return setPerson(
+      await fetchPerson(personsName, country),
+    );
   }
 
   void handleChangePersonsName(String name) =>
@@ -65,9 +67,8 @@ class _GuessMyAgeController extends State<GuessMyAgeWidget> {
     handleLoading(true);
     verifyName();
     verifyCountry();
-    PersonsAge _person = await _fetchPerson();
+    await _fetchPerson();
     handleLoading(false);
-    setPerson(_person);
   }
 
   @override
