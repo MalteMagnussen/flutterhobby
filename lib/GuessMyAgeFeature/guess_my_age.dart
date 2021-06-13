@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widget_view.dart';
 import 'agify.dart';
 import 'agify_fetch.dart';
 
@@ -20,6 +21,7 @@ class _GuessMyAgeController extends State<GuessMyAgeWidget> {
   @override
   void initState() {
     super.initState();
+    person = PersonsAge.nameCountry(personsName, country);
     _nameController = TextEditingController();
     _countryController = TextEditingController();
   }
@@ -71,9 +73,9 @@ class _GuessMyAgeController extends State<GuessMyAgeWidget> {
   Widget build(BuildContext context) => _GuessMyAgeView(this);
 }
 
-class _GuessMyAgeView extends StatelessWidget {
-  final _GuessMyAgeController state;
-  const _GuessMyAgeView(this.state, {Key? key}) : super(key: key);
+class _GuessMyAgeView
+    extends WidgetView<GuessMyAgeWidget, _GuessMyAgeController> {
+  const _GuessMyAgeView(_GuessMyAgeController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +138,23 @@ class _GuessMyAgeView extends StatelessWidget {
                         onPressed: () async {
                           try {
                             state.handleSubmit();
+                            await showDialog<void>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title:
+                                      Text("Your age is ${state.person.age}!"),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           } on Exception catch (error) {
                             await showDialog<void>(
                               context: context,
@@ -156,22 +175,6 @@ class _GuessMyAgeView extends StatelessWidget {
                               },
                             );
                           }
-                          await showDialog<void>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("Your age is ${state.person.age}!"),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
                         },
                         child: const Text("Go!",
                             style: TextStyle(color: Colors.black)),
