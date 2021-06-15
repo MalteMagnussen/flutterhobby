@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterhobby/MainScreen/malte_socials.dart';
 import 'GuessMyAgeFeature/guess_my_age.dart';
 
 void main() {
@@ -14,7 +15,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "Malte Hviid-Magnussen",
       theme: ThemeData.dark(),
-      home: const GuessMyAgeWidget(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MalteSocials(),
+        '/guessage': (context) => const GuessMyAgeWidget(),
+      },
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../drawer.dart';
 import '../widget_view.dart';
 import 'agify.dart';
 import 'agify_fetch.dart';
@@ -82,8 +84,12 @@ class _GuessMyAgeView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: HobbyNavigation(),
       appBar: AppBar(
-        title: const Text("Malte Hviid-Magnussen - Hobby Projects"),
+        title: InkWell(
+          onTap: () => Navigator.pushNamed(context, '/'),
+          child: const Text("Malte Hviid-Magnussen - Hobby Projects"),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
