@@ -26,13 +26,19 @@ class _HobbyNavigationView
             child: Text(''),
           ),
           ListTile(
-            title: const Text('Front Page'),
+            title: const Text(
+              'Front Page',
+              textScaleFactor: 1.5,
+            ),
             onTap: () {
               Navigator.pushNamed(context, '/');
             },
           ),
           ListTile(
-            title: Text('Guess Your Age'),
+            title: const Text(
+              'Guess Your Age',
+              textScaleFactor: 1.5,
+            ),
             onTap: () {
               Navigator.pushNamed(context, '/guessage');
             },
