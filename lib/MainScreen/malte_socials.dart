@@ -53,6 +53,7 @@ class _MalteSocialsView
                 Text(
                   'Malte Hviid-Magnussen',
                   textScaleFactor: 4,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
                 const SizedBox(

@@ -50,6 +50,8 @@ class _GuessMyAgeController extends State<GuessMyAgeWidget> {
   void verifyName() {
     setState(() {
       personsName.trim();
+      List names = personsName.split(" ");
+      personsName = names[0];
       if (personsName.length < 2) {
         throw Exception("Name has to be longer than 2 characters.");
       }
@@ -131,7 +133,7 @@ class _GuessMyAgeView
                             controller: state._nameController,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Input your Name',
+                              labelText: 'Input your First Name',
                             ),
                             onChanged: (_value) =>
                                 state.handleChangePersonsName(_value)),
