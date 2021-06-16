@@ -84,6 +84,7 @@ class _CatImageWidgetView
       child: Card(
         elevation: state.widget.elevation,
         child: InkWell(
+          // TODO - Remove InkWell and onTap once we have the draggable feature implemented.
           onTap: () {
             state.clearImageCache();
           },
