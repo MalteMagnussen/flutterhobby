@@ -43,6 +43,15 @@ class _HobbyNavigationView
               Navigator.pushNamed(context, '/guessage');
             },
           ),
+          ListTile(
+            title: const Text(
+              'Cats',
+              textScaleFactor: 1.5,
+            ),
+            onTap: () {
+              Navigator.pushNamed(context, '/cats');
+            },
+          ),
         ],
       ),
     );

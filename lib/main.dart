@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/MainScreen/malte_socials.dart';
+import 'Cats/cats.dart';
 import 'GuessMyAgeFeature/guess_my_age.dart';
 
 void main() {
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MalteSocials(),
         '/guessage': (context) => const GuessMyAgeWidget(),
+        '/cats': (context) => const CatWidget(),
       },
     );
   }
