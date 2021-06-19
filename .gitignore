@@ -10,6 +10,7 @@
 .dart_tool/
 .packages
 build/
+.idea/*
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
 
@@ -619,3 +620,5 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter,androidstudio,dart,firebase
+/.idea/
+/.idea/
