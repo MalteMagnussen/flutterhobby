@@ -622,3 +622,5 @@ fabric.properties
 # End of https://www.toptal.com/developers/gitignore/api/flutter,androidstudio,dart,firebase
 /.idea/
 /.idea/
+.idea/libraries/Dart_SDK.xml
+.idea/libraries/Flutter_Plugins.xml
