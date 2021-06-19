@@ -14,6 +14,8 @@ class _MalteSocialsController extends State<MalteSocials> {
       ? await launch(_url)
       : throw 'Could not launch $_url';
 
+  String malteText = 'Flutter. Sailing.\nSecurity. DevOps.';
+
   @override
   Widget build(BuildContext context) => _MalteSocialsView(this);
 }
@@ -60,7 +62,7 @@ class _MalteSocialsView
                   height: 20,
                 ),
                 Text(
-                  'Flutter. Sailing.\nBouldering. DevOps.',
+                  state.malteText,
                   style: Theme.of(context).textTheme.bodyText1,
                   textScaleFactor: 2,
                   textAlign: TextAlign.center,
