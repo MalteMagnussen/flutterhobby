@@ -624,3 +624,5 @@ fabric.properties
 /.idea/
 .idea/libraries/Dart_SDK.xml
 .idea/libraries/Flutter_Plugins.xml
+.idea/libraries/Dart_SDK.xml
+.idea/libraries/Flutter_Plugins.xml
