@@ -12,29 +12,33 @@ class CatWidget extends StatefulWidget {
 
 class _CatWidgetController extends State<CatWidget> {
   final baseCatUrl = "https://cataas.com/cat";
-  late String catUrl;
+  late String imageUrl;
 
-  List<String> likedCats = [];
+  List<ImageProvider<Object>> likedImages = [];
 
   String newVersion() {
     return "?v=${DateTime.now().millisecondsSinceEpoch}";
   }
 
-  void handleAcceptData(String value) {
+  void handleAcceptData(ImageProvider<Object> value) {
     setState(() {
-      likedCats.add(value);
+      likedImages.add(value);
     });
   }
 
+  late ImageProvider<Object> currentImage;
+
   void setNewCatUrl() {
     setState(() {
-      catUrl = baseCatUrl + newVersion();
+      imageUrl = baseCatUrl + newVersion();
+      currentImage = NetworkImage(imageUrl);
     });
   }
 
   @override
   void initState() {
-    catUrl = baseCatUrl + newVersion();
+    imageUrl = baseCatUrl + newVersion();
+    currentImage = NetworkImage(imageUrl);
     super.initState();
   }
 
@@ -63,16 +67,15 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
               heightFactor: 0.7,
               child: Container(
                 padding: const EdgeInsets.all(10),
-                child: Draggable<String>(
-                  data: state.catUrl,
+                child: Draggable<ImageProvider<Object>>(
+                  data: NetworkImage(state.imageUrl),
                   onDragStarted: () => state.setNewCatUrl(),
-                  childWhenDragging: CatImageWidget(url: state.catUrl),
                   feedback: Container(
-                    height: 300,
-                    width: 220,
-                    child: CatImageWidget(url: state.catUrl),
+                    height: 320,
+                    width: 400,
+                    child: CatImageWidget(image: state.currentImage),
                   ),
-                  child: CatImageWidget(url: state.catUrl),
+                  child: CatImageWidget(image: state.currentImage),
                 ),
               ),
             ),
@@ -80,7 +83,7 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
           Expanded(
             child: FractionallySizedBox(
               heightFactor: 0.7,
-              child: DragTarget<String>(onAccept: (value) {
+              child: DragTarget<ImageProvider<Object>>(onAccept: (value) {
                 state.handleAcceptData(value);
               }, builder: (_, candidateData, rejectedData) {
                 return Container(
@@ -91,8 +94,8 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
                       Radius.circular(10),
                     ),
                   ),
-                  child: state.likedCats.isNotEmpty
-                      ? CatImageWidget(url: state.likedCats.last)
+                  child: state.likedImages.isNotEmpty
+                      ? CatImageWidget(image: state.likedImages.last)
                       : Container(),
                 );
               }),
@@ -105,8 +108,8 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
 }
 
 class CatImageWidget extends StatefulWidget {
-  const CatImageWidget({Key? key, required this.url}) : super(key: key);
-  final String url;
+  const CatImageWidget({Key? key, required this.image}) : super(key: key);
+  final ImageProvider<Object> image;
 
   @override
   _CatImageWidgetController createState() => _CatImageWidgetController();
@@ -127,7 +130,7 @@ class _CatImageWidgetView
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(widget.url),
+          image: widget.image,
         ),
         borderRadius: const BorderRadius.all(Radius.circular(10)),
       ),
