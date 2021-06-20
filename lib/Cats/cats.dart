@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../drawer.dart';
+
+// TODO - Make a Trashcan below first image,
+//        to make it clear that you can drag away images
+
+// TODO - Add explanatory text header
+
+// TODO - Put uploaded images into queue.
+//        Remove item from queue when you drag item away.
+
+// TODO - Allow user to download likedImages[]
+
+// TODO - Add Counter for likedImages[]
 
 class CatWidget extends StatefulWidget {
   const CatWidget({Key? key}) : super(key: key);
@@ -14,7 +27,22 @@ class _CatWidgetController extends State<CatWidget> {
   final baseCatUrl = "https://cataas.com/cat";
   late String imageUrl;
 
+  late ImageProvider<Object> currentImage;
+  List<ImageProvider<Object>> nextImages = [];
   List<ImageProvider<Object>> likedImages = [];
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        currentImage = NetworkImage(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   String newVersion() {
     return "?v=${DateTime.now().millisecondsSinceEpoch}";
@@ -25,8 +53,6 @@ class _CatWidgetController extends State<CatWidget> {
       likedImages.add(value);
     });
   }
-
-  late ImageProvider<Object> currentImage;
 
   void setNewCatUrl() {
     setState(() {
@@ -59,6 +85,13 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
           child: const Text("Malte Hviid-Magnussen - Hobby Projects"),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        child: const Center(child: Icon(Icons.add_a_photo)),
+        tooltip: "Upload a Photo",
+        onPressed: state.getImage,
+        hoverElevation: 10,
+      ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -68,7 +101,7 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 child: Draggable<ImageProvider<Object>>(
-                  data: NetworkImage(state.imageUrl),
+                  data: state.currentImage,
                   onDragStarted: () => state.setNewCatUrl(),
                   feedback: Container(
                     height: 320,
