@@ -1,3 +1,6 @@
+import 'dart:io' show File;
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,13 +36,13 @@ class _CatWidgetController extends State<CatWidget> {
   final picker = ImagePicker();
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      if (pickedFile != null) {
+      if (pickedFile != null && kIsWeb) {
         currentImage = NetworkImage(pickedFile.path);
       } else {
-        print('No image selected.');
+        currentImage = FileImage(File(pickedFile!.path));
       }
     });
   }
