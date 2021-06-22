@@ -1,4 +1,5 @@
-import 'dart:io' show File;
+import 'dart:async';
+import 'dart:io' show Directory, File;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -6,9 +7,6 @@ import 'package:flutterhobby/widget_view.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../drawer.dart';
-
-// TODO - Allow user to download likedImages[]
-// https://stackoverflow.com/a/62236091
 
 class SortImageWidget extends StatefulWidget {
   const SortImageWidget({Key? key}) : super(key: key);
@@ -21,13 +19,17 @@ class _SortImageWidgetController extends State<SortImageWidget> {
   late String imageUrl;
 
   List<ImageProvider<Object>> nextImages = [];
-
+  List<File> imageFiles = [];
+  List<File> sortedFiles = [];
   List<ImageProvider<Object>> likedImages = [];
+  List<File> likedFiles = [];
   final picker = ImagePicker();
 
   void dragStarted() {
     setState(() {
       nextImages.removeAt(0);
+      sortedFiles.add(imageFiles.first);
+      imageFiles.removeAt(0);
     });
   }
 
@@ -48,7 +50,17 @@ class _SortImageWidgetController extends State<SortImageWidget> {
       } else {
         nextImages.add(FileImage(_tmpFile));
       }
+      imageFiles.add(_tmpFile);
     });
+  }
+
+  void deleteFiles() {
+    for (var element in sortedFiles) {
+      if (likedFiles.contains(element)) {
+      } else {
+        element.deleteSync();
+      }
+    }
   }
 
   String newVersion() {
@@ -58,6 +70,7 @@ class _SortImageWidgetController extends State<SortImageWidget> {
   void handleAcceptData(ImageProvider<Object> value) {
     setState(() {
       likedImages.add(value);
+      likedFiles.add(imageFiles.first);
     });
   }
 
@@ -84,12 +97,27 @@ class _SortImageWidgetView
           child: const Text("Sort your photos"),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        child: const Center(child: Icon(Icons.add_a_photo)),
-        tooltip: "Upload a Photo",
-        onPressed: state.getImage,
-        hoverElevation: 10,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            child: const Center(child: Icon(Icons.delete)),
+            tooltip: "Delete unused images",
+            onPressed: state.deleteFiles,
+            hoverElevation: 10,
+            heroTag: null,
+          ),
+          const SizedBox(width: 10),
+          FloatingActionButton(
+            backgroundColor: Colors.white,
+            child: const Center(child: Icon(Icons.add_a_photo)),
+            tooltip: "Upload a Photo",
+            onPressed: state.getImage,
+            hoverElevation: 10,
+            heroTag: null,
+          ),
+        ],
       ),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
