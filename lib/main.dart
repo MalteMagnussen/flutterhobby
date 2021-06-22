@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       initialRoute: '/',
       routes: {
-        '/': (context) => MalteSocials(),
+        '/imagesorting': (context) => MalteSocials(),
         '/guessage': (context) => const GuessMyAgeWidget(),
-        '/imagesorting': (context) => const SortImageWidget(),
+        '/': (context) => const SortImageWidget(),
       },
     );
   }

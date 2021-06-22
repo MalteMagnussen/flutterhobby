@@ -91,53 +91,86 @@ class _SortImageWidgetView
         hoverElevation: 10,
       ),
       body: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: FractionallySizedBox(
-              heightFactor: 0.7,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: state.userHasUploadedPhotos()
-                    ? Draggable<ImageProvider<Object>>(
-                        data: state.nextImages.first,
-                        onDragStarted: () => state.dragStarted(),
-                        feedback: Container(
-                          height: kIsWeb ? 320 : 400,
-                          width: kIsWeb ? 400 : 320,
-                          child:
-                              SingleImageWidget(image: state.nextImages.first),
-                        ),
-                        child: SingleImageWidget(image: state.nextImages.first),
-                      )
-                    : const Center(
-                        child: Text(
-                          "Upload your photos, \nto sort them.",
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: FractionallySizedBox(
-              heightFactor: 0.7,
-              child: DragTarget<ImageProvider<Object>>(onAccept: (value) {
-                state.handleAcceptData(value);
-              }, builder: (_, candidateData, rejectedData) {
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: const BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
+          Flexible(
+            flex: 1,
+            child: Column(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: FractionallySizedBox(
+                    heightFactor: 0.8,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      child: state.userHasUploadedPhotos()
+                          ? Draggable<ImageProvider<Object>>(
+                              data: state.nextImages.first,
+                              onDragStarted: () => state.dragStarted(),
+                              feedback: Container(
+                                height: kIsWeb ? 320 : 400,
+                                width: kIsWeb ? 400 : 320,
+                                child: SingleImageWidget(
+                                    image: state.nextImages.first),
+                              ),
+                              child: SingleImageWidget(
+                                  image: state.nextImages.first),
+                            )
+                          : const Center(
+                              child: Text(
+                                "Upload your photos, \nto sort them."
+                                "\n\n"
+                                "Drag images to "
+                                "\nthe right to keep them."
+                                "\n\n"
+                                "Images not in the pile\n"
+                                "will be discarded.",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                     ),
                   ),
-                  child: state.likedImages.isNotEmpty
-                      ? SingleImageWidget(image: state.likedImages.last)
-                      : Container(),
-                );
-              }),
+                ),
+                state.userHasUploadedPhotos()
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("1 of ${state.nextImages.length}"),
+                      )
+                    : Container(),
+              ],
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: Column(
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: FractionallySizedBox(
+                    heightFactor: 0.8,
+                    child: DragTarget<ImageProvider<Object>>(onAccept: (value) {
+                      state.handleAcceptData(value);
+                    }, builder: (_, candidateData, rejectedData) {
+                      return Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: const BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        child: state.likedImages.isNotEmpty
+                            ? SingleImageWidget(image: state.likedImages.last)
+                            : Container(),
+                      );
+                    }),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Kept images: ${state.likedImages.length}"),
+                ),
+              ],
             ),
           ),
         ],
