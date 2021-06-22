@@ -36,7 +36,7 @@ class _HobbyNavigationView
           ),
           ListTile(
             title: const Text(
-              'Guess Your Age',
+              'Guess your age',
               textScaleFactor: 1.5,
             ),
             onTap: () {
@@ -45,11 +45,11 @@ class _HobbyNavigationView
           ),
           ListTile(
             title: const Text(
-              'Cats',
+              'Sort your photos',
               textScaleFactor: 1.5,
             ),
             onTap: () {
-              Navigator.pushNamed(context, '/cats');
+              Navigator.pushNamed(context, '/imagesorting');
             },
           ),
         ],

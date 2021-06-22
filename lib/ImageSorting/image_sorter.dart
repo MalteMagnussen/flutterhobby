@@ -10,39 +10,42 @@ import '../drawer.dart';
 // TODO - Make a Trashcan below first image,
 //        to make it clear that you can drag away images
 
-// TODO - Add explanatory text header
-
-// TODO - Put uploaded images into queue.
-//        Remove item from queue when you drag item away.
-
 // TODO - Allow user to download likedImages[]
 
-// TODO - Add Counter for likedImages[]
+// TODO - Add Counter for likedImages[] and nextImages[]
 
-class CatWidget extends StatefulWidget {
-  const CatWidget({Key? key}) : super(key: key);
+class SortImageWidget extends StatefulWidget {
+  const SortImageWidget({Key? key}) : super(key: key);
 
   @override
-  _CatWidgetController createState() => _CatWidgetController();
+  _SortImageWidgetController createState() => _SortImageWidgetController();
 }
 
-class _CatWidgetController extends State<CatWidget> {
-  final baseCatUrl = "https://cataas.com/cat";
+class _SortImageWidgetController extends State<SortImageWidget> {
   late String imageUrl;
 
-  late ImageProvider<Object> currentImage;
   List<ImageProvider<Object>> nextImages = [];
   List<ImageProvider<Object>> likedImages = [];
   final picker = ImagePicker();
+
+  void dragStarted() {
+    setState(() {
+      nextImages.removeAt(0);
+    });
+  }
+
+  bool userHasUploadedPhotos() {
+    return nextImages.isNotEmpty;
+  }
 
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null && kIsWeb) {
-        currentImage = NetworkImage(pickedFile.path);
+        nextImages.add(NetworkImage(pickedFile.path));
       } else {
-        currentImage = FileImage(File(pickedFile!.path));
+        nextImages.add(FileImage(File(pickedFile!.path)));
       }
     });
   }
@@ -57,26 +60,18 @@ class _CatWidgetController extends State<CatWidget> {
     });
   }
 
-  void setNewCatUrl() {
-    setState(() {
-      imageUrl = baseCatUrl + newVersion();
-      currentImage = NetworkImage(imageUrl);
-    });
-  }
-
   @override
   void initState() {
-    imageUrl = baseCatUrl + newVersion();
-    currentImage = NetworkImage(imageUrl);
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) => _CatWidgetView(this);
+  Widget build(BuildContext context) => _SortImageWidgetView(this);
 }
 
-class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
-  const _CatWidgetView(_CatWidgetController state) : super(state);
+class _SortImageWidgetView
+    extends WidgetView<SortImageWidget, _SortImageWidgetController> {
+  const _SortImageWidgetView(_SortImageWidgetController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +80,7 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
       appBar: AppBar(
         title: InkWell(
           onTap: () => Navigator.pushNamed(context, '/'),
-          child: const Text("Malte Hviid-Magnussen - Hobby Projects"),
+          child: const Text("Sort your photos"),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -103,16 +98,24 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
               heightFactor: 0.7,
               child: Container(
                 padding: const EdgeInsets.all(10),
-                child: Draggable<ImageProvider<Object>>(
-                  data: state.currentImage,
-                  onDragStarted: () => state.setNewCatUrl(),
-                  feedback: Container(
-                    height: 320,
-                    width: 400,
-                    child: CatImageWidget(image: state.currentImage),
-                  ),
-                  child: CatImageWidget(image: state.currentImage),
-                ),
+                child: state.userHasUploadedPhotos()
+                    ? Draggable<ImageProvider<Object>>(
+                        data: state.nextImages.first,
+                        onDragStarted: () => state.dragStarted(),
+                        feedback: Container(
+                          height: kIsWeb ? 320 : 400,
+                          width: kIsWeb ? 400 : 320,
+                          child:
+                              SingleImageWidget(image: state.nextImages.first),
+                        ),
+                        child: SingleImageWidget(image: state.nextImages.first),
+                      )
+                    : const Center(
+                        child: Text(
+                          "Upload your photos, \nto sort them.",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
               ),
             ),
           ),
@@ -131,7 +134,7 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
                     ),
                   ),
                   child: state.likedImages.isNotEmpty
-                      ? CatImageWidget(image: state.likedImages.last)
+                      ? SingleImageWidget(image: state.likedImages.last)
                       : Container(),
                 );
               }),
@@ -143,22 +146,23 @@ class _CatWidgetView extends WidgetView<CatWidget, _CatWidgetController> {
   }
 }
 
-class CatImageWidget extends StatefulWidget {
-  const CatImageWidget({Key? key, required this.image}) : super(key: key);
+class SingleImageWidget extends StatefulWidget {
+  const SingleImageWidget({Key? key, required this.image}) : super(key: key);
   final ImageProvider<Object> image;
 
   @override
-  _CatImageWidgetController createState() => _CatImageWidgetController();
+  _SingleImageWidgetController createState() => _SingleImageWidgetController();
 }
 
-class _CatImageWidgetController extends State<CatImageWidget> {
+class _SingleImageWidgetController extends State<SingleImageWidget> {
   @override
-  Widget build(BuildContext context) => _CatImageWidgetView(this);
+  Widget build(BuildContext context) => _SingleImageWidgetView(this);
 }
 
-class _CatImageWidgetView
-    extends WidgetView<CatImageWidget, _CatImageWidgetController> {
-  const _CatImageWidgetView(_CatImageWidgetController state) : super(state);
+class _SingleImageWidgetView
+    extends WidgetView<SingleImageWidget, _SingleImageWidgetController> {
+  const _SingleImageWidgetView(_SingleImageWidgetController state)
+      : super(state);
 
   @override
   Widget build(BuildContext context) {

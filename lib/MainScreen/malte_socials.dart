@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../drawer.dart';
 
+// TODO Add gallery
+
 class MalteSocials extends StatefulWidget {
   @override
   _MalteSocialsController createState() => _MalteSocialsController();
@@ -14,6 +16,7 @@ class _MalteSocialsController extends State<MalteSocials> {
       ? await launch(_url)
       : throw 'Could not launch $_url';
 
+  final ScrollController _controller = ScrollController();
   String malteText = 'Flutter. Sailing.\nSecurity. DevOps.';
 
   @override
@@ -34,6 +37,7 @@ class _MalteSocialsView
         ),
       ),
       body: SingleChildScrollView(
+        controller: state._controller,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
