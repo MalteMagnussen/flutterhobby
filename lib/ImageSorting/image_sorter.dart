@@ -7,13 +7,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../drawer.dart';
 
-// TODO - Make a Trashcan below first image,
-//        to make it clear that you can drag away images
-
 // TODO - Allow user to download likedImages[]
-
-// TODO - Add Counter for likedImages[] and nextImages[]
-
+// https://stackoverflow.com/a/62236091
 class SortImageWidget extends StatefulWidget {
   const SortImageWidget({Key? key}) : super(key: key);
 
@@ -32,6 +27,10 @@ class _SortImageWidgetController extends State<SortImageWidget> {
     setState(() {
       nextImages.removeAt(0);
     });
+  }
+
+  ImageProvider<Object> nextImage() {
+    return nextImages.first;
   }
 
   bool userHasUploadedPhotos() {
@@ -105,16 +104,16 @@ class _SortImageWidgetView
                       padding: const EdgeInsets.all(10),
                       child: state.userHasUploadedPhotos()
                           ? Draggable<ImageProvider<Object>>(
-                              data: state.nextImages.first,
+                              data: state.nextImage(),
                               onDragStarted: () => state.dragStarted(),
                               feedback: Container(
                                 height: kIsWeb ? 320 : 400,
                                 width: kIsWeb ? 400 : 320,
-                                child: SingleImageWidget(
-                                    image: state.nextImages.first),
+                                child:
+                                    SingleImageWidget(image: state.nextImage()),
                               ),
-                              child: SingleImageWidget(
-                                  image: state.nextImages.first),
+                              child:
+                                  SingleImageWidget(image: state.nextImage()),
                             )
                           : const Center(
                               child: Text(
