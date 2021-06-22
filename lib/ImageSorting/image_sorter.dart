@@ -9,6 +9,7 @@ import '../drawer.dart';
 
 // TODO - Allow user to download likedImages[]
 // https://stackoverflow.com/a/62236091
+
 class SortImageWidget extends StatefulWidget {
   const SortImageWidget({Key? key}) : super(key: key);
 
@@ -20,6 +21,7 @@ class _SortImageWidgetController extends State<SortImageWidget> {
   late String imageUrl;
 
   List<ImageProvider<Object>> nextImages = [];
+
   List<ImageProvider<Object>> likedImages = [];
   final picker = ImagePicker();
 
@@ -39,12 +41,12 @@ class _SortImageWidgetController extends State<SortImageWidget> {
 
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-
+    File _tmpFile = File(pickedFile!.path);
     setState(() {
-      if (pickedFile != null && kIsWeb) {
+      if (kIsWeb) {
         nextImages.add(NetworkImage(pickedFile.path));
       } else {
-        nextImages.add(FileImage(File(pickedFile!.path)));
+        nextImages.add(FileImage(_tmpFile));
       }
     });
   }
