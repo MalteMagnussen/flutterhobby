@@ -17,6 +17,11 @@ class _MuseumWidgetView
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return const Center(
+      child: Text(
+        "Here will be a museum feature, "
+        "\nusing art from https://metmuseum.github.io/",
+      ),
+    );
   }
 }

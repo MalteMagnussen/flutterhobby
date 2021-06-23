@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/MainScreen/malte_socials.dart';
+import 'package:flutterhobby/MuseumFeature/museum_main.dart';
 
 import 'GuessMyAgeFeature/guess_my_age.dart';
 import 'ImageSorting/image_sorter.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+
+  final List<String> navigationPath = [
+    '/',
+    '/guessage',
+    '/imagesorting',
+    '/museum',
+  ];
 
   // This widget is the root of your application.
   @override
@@ -19,9 +27,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       initialRoute: '/',
       routes: {
-        '/': (context) => MalteSocials(),
-        '/guessage': (context) => const GuessMyAgeWidget(),
-        '/imagesorting': (context) => const SortImageWidget(),
+        navigationPath[0]: (context) => MalteSocials(),
+        navigationPath[1]: (context) => const GuessMyAgeWidget(),
+        navigationPath[2]: (context) => const SortImageWidget(),
+        navigationPath[3]: (context) => MuseumWidget(),
       },
     );
   }

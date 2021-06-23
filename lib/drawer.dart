@@ -7,6 +7,13 @@ class HobbyNavigation extends StatefulWidget {
 }
 
 class _HobbyNavigationController extends State<HobbyNavigation> {
+  final Map<String, String> navigationInfo = {
+    "Front Page": "/",
+    "Guess your age": "/guessage",
+    "Sort your photos": "/imagesorting",
+    "Museum": "/museum",
+  };
+
   @override
   Widget build(BuildContext context) => _HobbyNavigationView(this);
 }
@@ -14,6 +21,7 @@ class _HobbyNavigationController extends State<HobbyNavigation> {
 class _HobbyNavigationView
     extends WidgetView<HobbyNavigation, _HobbyNavigationController> {
   _HobbyNavigationView(_HobbyNavigationController state) : super(state);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -25,35 +33,37 @@ class _HobbyNavigationView
             decoration: BoxDecoration(),
             child: Text(''),
           ),
-          ListTile(
-            title: const Text(
-              'Front Page',
-              textScaleFactor: 1.5,
+          for (String key in state.navigationInfo.keys)
+            DrawerListTile(
+              navigationPath: state.navigationInfo![key],
+              navigationText: key,
             ),
-            onTap: () {
-              Navigator.pushNamed(context, '/');
-            },
-          ),
-          ListTile(
-            title: const Text(
-              'Guess your age',
-              textScaleFactor: 1.5,
-            ),
-            onTap: () {
-              Navigator.pushNamed(context, '/guessage');
-            },
-          ),
-          ListTile(
-            title: const Text(
-              'Sort your photos',
-              textScaleFactor: 1.5,
-            ),
-            onTap: () {
-              Navigator.pushNamed(context, '/imagesorting');
-            },
-          ),
         ],
       ),
+    );
+  }
+}
+
+class DrawerListTile extends StatelessWidget {
+  const DrawerListTile({
+    Key? key,
+    required this.navigationPath,
+    required this.navigationText,
+  }) : super(key: key);
+
+  final String navigationText;
+  final String? navigationPath;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(
+        navigationText,
+        textScaleFactor: 1.5,
+      ),
+      onTap: () {
+        Navigator.pushNamed(context, navigationPath!);
+      },
     );
   }
 }
