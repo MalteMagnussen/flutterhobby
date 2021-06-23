@@ -40,84 +40,96 @@ class _MalteSocialsView
       ),
       body: SingleChildScrollView(
         controller: state._controller,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                const SizedBox(
-                  height: 40,
+        child: Column(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  alignment: AlignmentDirectional.topCenter,
+                  fit: BoxFit.cover,
+                  image: AssetImage("assets/backgroundDarkSky.jpg"),
                 ),
-                CircleAvatar(
-                  radius: 150,
-                  backgroundImage: const Image(
-                    image: AssetImage("assets/malte.jpg"),
-                  ).image,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  'Malte Hviid-Magnussen',
-                  textScaleFactor: 4,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  state.malteText,
-                  style: Theme.of(context).textTheme.bodyText1,
-                  textScaleFactor: 2,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextButton.icon(
-                  icon: const SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Image(
-                      image: AssetImage("assets/GitHub-Mark-Light-64px.png"),
-                    ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const SizedBox(
+                        height: 60,
+                      ),
+                      CircleAvatar(
+                        radius: 150,
+                        backgroundImage: const Image(
+                          image: AssetImage("assets/malte.jpg"),
+                        ).image,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        'Malte Hviid-Magnussen',
+                        textScaleFactor: 4,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        state.malteText,
+                        style: Theme.of(context).textTheme.bodyText1,
+                        textScaleFactor: 2,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextButton.icon(
+                        icon: const SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: Image(
+                            image:
+                                AssetImage("assets/GitHub-Mark-Light-64px.png"),
+                          ),
+                        ),
+                        label: Text(
+                          'GitHub',
+                          style: Theme.of(context).textTheme.bodyText1,
+                          textScaleFactor: 1.5,
+                        ),
+                        onPressed: () => state
+                            ._launchURL("https://github.com/MalteMagnussen"),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextButton.icon(
+                        icon: const SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: Image(
+                            image: AssetImage("assets/LI-In-Bug.png"),
+                          ),
+                        ),
+                        label: Text(
+                          'LinkedIn',
+                          style: Theme.of(context).textTheme.bodyText1,
+                          textScaleFactor: 1.5,
+                        ),
+                        onPressed: () => state._launchURL(
+                            "https://www.linkedin.com/in/maltemagnussen/"),
+                      )
+                    ],
                   ),
-                  label: Text(
-                    'GitHub',
-                    style: Theme.of(context).textTheme.bodyText1,
-                    textScaleFactor: 1.5,
-                  ),
-                  onPressed: () =>
-                      state._launchURL("https://github.com/MalteMagnussen"),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextButton.icon(
-                  icon: const SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Image(
-                      image: AssetImage("assets/LI-In-Bug.png"),
-                    ),
-                  ),
-                  label: Text(
-                    'LinkedIn',
-                    style: Theme.of(context).textTheme.bodyText1,
-                    textScaleFactor: 1.5,
-                  ),
-                  onPressed: () => state._launchURL(
-                      "https://www.linkedin.com/in/maltemagnussen/"),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                VideoPlayerScreen(video: "assets/boelger.mp4"),
-              ],
+              ),
             ),
-          ),
+            VideoPlayerScreen(video: "assets/boelger.mp4"),
+            Image.asset("assets/norway.jpg"),
+          ],
         ),
       ),
     );
@@ -128,6 +140,7 @@ class VideoPlayerScreen extends StatefulWidget {
   VideoPlayerScreen({Key? key, required this.video}) : super(key: key);
 
   String video;
+
   @override
   _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
 }
@@ -178,7 +191,19 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         } else {
           // If the VideoPlayerController is still initializing, show a
           // loading spinner.
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: Column(
+              children: const [
+                SizedBox(
+                  height: 20,
+                ),
+                CircularProgressIndicator(),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          );
         }
       },
     );
