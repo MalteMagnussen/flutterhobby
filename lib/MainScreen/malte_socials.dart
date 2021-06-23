@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 import '../drawer.dart';
 
@@ -26,6 +27,7 @@ class _MalteSocialsController extends State<MalteSocials> {
 class _MalteSocialsView
     extends WidgetView<MalteSocials, _MalteSocialsController> {
   _MalteSocialsView(_MalteSocialsController state) : super(state);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,12 +110,77 @@ class _MalteSocialsView
                   ),
                   onPressed: () => state._launchURL(
                       "https://www.linkedin.com/in/maltemagnussen/"),
-                )
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                VideoPlayerScreen(video: "assets/boelger.mp4"),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class VideoPlayerScreen extends StatefulWidget {
+  VideoPlayerScreen({Key? key, required this.video}) : super(key: key);
+
+  String video;
+  @override
+  _VideoPlayerScreenState createState() => _VideoPlayerScreenState();
+}
+
+class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+
+  @override
+  void initState() {
+    // Create an store the VideoPlayerController. The VideoPlayerController
+    // offers several different constructors to play videos from assets, files,
+    // or the internet.
+    _controller = VideoPlayerController.asset(widget.video);
+    _initializeVideoPlayerFuture = _controller.initialize().then((_) {
+      setState(() {
+        _controller.setVolume(0);
+        _controller.setLooping(true);
+        _controller.play();
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Ensure disposing of the VideoPlayerController to free up resources.
+    _controller.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return // Use a FutureBuilder to display a loading spinner while waiting for the
+// VideoPlayerController to finish initializing.
+        FutureBuilder(
+      future: _initializeVideoPlayerFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          // If the VideoPlayerController has finished initialization, use
+          // the data it provides to limit the aspect ratio of the video.
+          return AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            // Use the VideoPlayer widget to display the video.
+            child: VideoPlayer(_controller),
+          );
+        } else {
+          // If the VideoPlayerController is still initializing, show a
+          // loading spinner.
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }
