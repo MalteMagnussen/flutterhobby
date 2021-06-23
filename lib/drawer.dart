@@ -35,7 +35,7 @@ class _HobbyNavigationView
           ),
           for (String key in state.navigationInfo.keys)
             DrawerListTile(
-              navigationPath: state.navigationInfo![key],
+              navigationPath: state.navigationInfo[key],
               navigationText: key,
             ),
         ],

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
 
+import '../drawer.dart';
+
 class MuseumWidget extends StatefulWidget {
   @override
   _MuseumWidgetController createState() => _MuseumWidgetController();
@@ -17,10 +19,20 @@ class _MuseumWidgetView
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        "Here will be a museum feature, "
-        "\nusing art from https://metmuseum.github.io/",
+    return Scaffold(
+      drawer: HobbyNavigation(),
+      appBar: AppBar(
+        title: InkWell(
+          onTap: () => Navigator.pushNamed(context, '/'),
+          child: const Text("Malte Hviid-Magnussen - Hobby Projects"),
+        ),
+      ),
+      body: const Center(
+        child: Text(
+          "Here will be a museum feature, "
+          "\nusing art from The Metropolitan Museum of Art",
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
