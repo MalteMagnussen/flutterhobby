@@ -19,17 +19,12 @@ class _SortImageWidgetController extends State<SortImageWidget> {
   late String imageUrl;
 
   List<ImageProvider<Object>> nextImages = [];
-  List<File> imageFiles = [];
-  List<File> sortedFiles = [];
   List<ImageProvider<Object>> likedImages = [];
-  List<File> likedFiles = [];
   final picker = ImagePicker();
 
   void dragStarted() {
     setState(() {
       nextImages.removeAt(0);
-      sortedFiles.add(imageFiles.first);
-      imageFiles.removeAt(0);
     });
   }
 
@@ -43,24 +38,15 @@ class _SortImageWidgetController extends State<SortImageWidget> {
 
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    File _tmpFile = File(pickedFile!.path);
+
     setState(() {
       if (kIsWeb) {
-        nextImages.add(NetworkImage(pickedFile.path));
+        nextImages.add(NetworkImage(pickedFile!.path));
       } else {
+        File _tmpFile = File(pickedFile!.path);
         nextImages.add(FileImage(_tmpFile));
       }
-      imageFiles.add(_tmpFile);
     });
-  }
-
-  void deleteFiles() {
-    for (var element in sortedFiles) {
-      if (likedFiles.contains(element)) {
-      } else {
-        element.deleteSync();
-      }
-    }
   }
 
   String newVersion() {
@@ -70,7 +56,6 @@ class _SortImageWidgetController extends State<SortImageWidget> {
   void handleAcceptData(ImageProvider<Object> value) {
     setState(() {
       likedImages.add(value);
-      likedFiles.add(imageFiles.first);
     });
   }
 
@@ -100,11 +85,11 @@ class _SortImageWidgetView
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          FloatingActionButton(
+          const FloatingActionButton(
             backgroundColor: Colors.white,
-            child: const Center(child: Icon(Icons.delete)),
+            child: Center(child: Icon(Icons.delete)),
             tooltip: "Delete unused images",
-            onPressed: state.deleteFiles,
+            onPressed: null,
             hoverElevation: 10,
             heroTag: null,
           ),
