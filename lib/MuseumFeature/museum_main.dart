@@ -22,10 +22,7 @@ class _MuseumWidgetView
     return Scaffold(
       drawer: HobbyNavigation(),
       appBar: AppBar(
-        title: InkWell(
-          onTap: () => Navigator.pushNamed(context, '/'),
-          child: const Text("Malte Hviid-Magnussen - Hobby Projects"),
-        ),
+        title: const Text("Explore Art"),
       ),
       body: const Center(
         child: Text(
