@@ -12,11 +12,12 @@ class Artwork {
   );
 
   factory Artwork.fromJson(Map<String, dynamic> json) {
-    return Artwork(
+    Artwork artwork = Artwork(
       json['objectID'],
       json['primaryImage'],
       json['artistDisplayName'],
       json['artistDisplayBio'],
     );
+    return artwork;
   }
 }
