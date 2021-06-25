@@ -62,7 +62,7 @@ class _MuseumWidgetView
       ),
       body: Center(
         child: FutureBuilder<Artwork>(
-          future: state.randomImage(),
+          future: state.artwork,
           builder: (context, snapshot) {
             print(snapshot.connectionState);
             if (snapshot.connectionState == ConnectionState.done) {
