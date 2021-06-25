@@ -26,9 +26,9 @@ Future<Artwork> fetchArtwork(int objectID) async {
   }
 }
 
-Future<List<int>> fetchPaintingsIds() async {
+Future<List<int>> fetchPaintingsIds([String search = ""]) async {
   final response = await http.get(Uri.parse(
-      "https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=painting"));
+      "https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&medium=Paintings&q=$search"));
   if (response.statusCode == 200) {
     Map<String, dynamic> json = jsonDecode(response.body);
     return json['objectIDs'];
