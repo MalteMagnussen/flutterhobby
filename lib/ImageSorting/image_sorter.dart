@@ -141,7 +141,8 @@ class _SortImageWidgetView
                                 "\nthe right to keep them."
                                 "\n\n"
                                 "Images not in the pile\n"
-                                "will be discarded.",
+                                "will be discarded.\n\n"
+                                "This doesn't work on Web yet.",
                                 textAlign: TextAlign.center,
                               ),
                             ),
