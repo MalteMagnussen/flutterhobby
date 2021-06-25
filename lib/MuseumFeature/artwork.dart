@@ -21,3 +21,13 @@ class Artwork {
     return artwork;
   }
 }
+
+class ObjectIDs {
+  List<int> objectIDs;
+
+  ObjectIDs(this.objectIDs);
+
+  factory ObjectIDs.fromJson(Map<String, dynamic> json) {
+    return ObjectIDs(json['objectIDs']);
+  }
+}

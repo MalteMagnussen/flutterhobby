@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
@@ -14,36 +13,36 @@ class MuseumWidget extends StatefulWidget {
 }
 
 class _MuseumWidgetController extends State<MuseumWidget> {
-  late Artwork art;
-  late Uint8List bytes;
-  late bool loadingImage;
-  late int imageId;
+  late Future<Artwork> artwork;
   Random random = Random();
 
   @override
   void initState() {
-    imageId = 437980;
+    artwork = randomImage();
     super.initState();
+  }
+
+  Future<bool> evictImage(String imageURL) async {
+    final NetworkImage provider = NetworkImage(imageURL);
+    return await provider.evict();
   }
 
   Future<int> getRandomImageID([String search = "\"\""]) async {
     List<int> ids = await fetchPaintingsIds(search);
-    return random.nextInt(ids[ids.length]);
+    return ids.elementAt(random.nextInt(ids.length - 1));
   }
 
-  void randomImage() async {
-    Artwork _tempArt = await fetchArtwork(
+  Future<Artwork> randomImage() async {
+    Artwork art = await fetchArtwork(
       await getRandomImageID(),
     );
-    setState(() {
-      art = _tempArt;
-    });
+    return art;
   }
 
-  Future<String> getArt(int id) async {
-    Artwork _tempArt = await fetchArtwork(id);
-    print(_tempArt.primaryImage);
-    return _tempArt.primaryImage;
+  void newRandomImage() {
+    setState(() {
+      artwork = randomImage();
+    });
   }
 
   @override
@@ -62,27 +61,22 @@ class _MuseumWidgetView
         title: const Text("Explore Art"),
       ),
       body: Center(
-        child: FutureBuilder<String>(
-          future: state.getArt(state.imageId),
+        child: FutureBuilder<Artwork>(
+          future: state.randomImage(),
           builder: (context, snapshot) {
             print(snapshot.connectionState);
-            switch (snapshot.connectionState) {
-              case ConnectionState.active:
-              case ConnectionState.waiting:
-                return const CircularProgressIndicator();
-              case ConnectionState.done:
-                if (snapshot.hasError) {
-                  return Text('Error ${snapshot.error}');
-                }
-                if (snapshot.hasData) {
-                  return InkWell(
-                      onTap: () {
-                        state.randomImage();
-                      },
-                      child: Image.network(snapshot.data!));
-                }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return InkWell(
+                onTap: state.newRandomImage,
+                child: Image.network(snapshot.data!.primaryImage,
+                    loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const CircularProgressIndicator();
+                }),
+              );
+            } else {
+              return const CircularProgressIndicator();
             }
-            return Text("Something went wrong.");
           },
         ),
       ),
