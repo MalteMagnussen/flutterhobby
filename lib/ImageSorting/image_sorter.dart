@@ -17,6 +17,7 @@ class SortImageWidget extends StatefulWidget {
 
 class _SortImageWidgetController extends State<SortImageWidget> {
   late String imageUrl;
+
   // https://api.nasa.gov/
   List<ImageProvider<Object>> nextImages = [];
   List<ImageProvider<Object>> likedImages = [];
@@ -37,14 +38,16 @@ class _SortImageWidgetController extends State<SortImageWidget> {
   }
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    List<PickedFile>? pickedFiles = await picker.getMultiImage();
 
     setState(() {
-      if (kIsWeb) {
-        nextImages.add(NetworkImage(pickedFile!.path));
-      } else {
-        File _tmpFile = File(pickedFile!.path);
-        nextImages.add(FileImage(_tmpFile));
+      for (var pickedFile in pickedFiles!) {
+        if (kIsWeb) {
+          nextImages.add(NetworkImage(pickedFile.path));
+        } else {
+          File _tmpFile = File(pickedFile.path);
+          nextImages.add(FileImage(_tmpFile));
+        }
       }
     });
   }
