@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -15,13 +16,31 @@ class MuseumWidget extends StatefulWidget {
 class _MuseumWidgetController extends State<MuseumWidget> {
   late Artwork art;
   late Uint8List bytes;
+  late bool loadingImage;
+  late int imageId;
+  Random random = Random();
 
   @override
   void initState() {
+    imageId = 437980;
     super.initState();
   }
 
-  Future<String> getArt2(int id) async {
+  Future<int> getRandomImageID([String search = "\"\""]) async {
+    List<int> ids = await fetchPaintingsIds(search);
+    return random.nextInt(ids[ids.length]);
+  }
+
+  void randomImage() async {
+    Artwork _tempArt = await fetchArtwork(
+      await getRandomImageID(),
+    );
+    setState(() {
+      art = _tempArt;
+    });
+  }
+
+  Future<String> getArt(int id) async {
     Artwork _tempArt = await fetchArtwork(id);
     print(_tempArt.primaryImage);
     return _tempArt.primaryImage;
@@ -44,7 +63,7 @@ class _MuseumWidgetView
       ),
       body: Center(
         child: FutureBuilder<String>(
-          future: state.getArt2(49257),
+          future: state.getArt(state.imageId),
           builder: (context, snapshot) {
             print(snapshot.connectionState);
             switch (snapshot.connectionState) {
@@ -56,7 +75,11 @@ class _MuseumWidgetView
                   return Text('Error ${snapshot.error}');
                 }
                 if (snapshot.hasData) {
-                  return Image.network(snapshot.data!);
+                  return InkWell(
+                      onTap: () {
+                        state.randomImage();
+                      },
+                      child: Image.network(snapshot.data!));
                 }
             }
             return Text("Something went wrong.");
