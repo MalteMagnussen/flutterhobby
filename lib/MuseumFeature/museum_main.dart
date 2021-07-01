@@ -42,30 +42,21 @@ class _MuseumWidgetView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: HobbyNavigation(),
-        appBar: AppBar(
-          title: const Text("Explore Art"),
+      drawer: HobbyNavigation(),
+      appBar: AppBar(
+        title: const Text("Explore Art"),
+      ),
+      body: Center(
+        child: PageView.builder(
+          controller: state.pageController,
+          allowImplicitScrolling: true,
+          physics: const BouncingScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            return buildImage(index);
+          },
         ),
-        body: Center(
-          child: FutureBuilder<List<int>>(
-            future: state.ids,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return PageView.builder(
-                  controller: state.pageController,
-                  allowImplicitScrolling: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return buildImage(index);
-                  },
-                );
-              } else {
-                return const CircularProgressIndicator();
-              }
-            },
-          ),
-        ));
+      ),
+    );
   }
 
   FutureBuilder<Artwork> buildImage(int index) {
@@ -75,13 +66,14 @@ class _MuseumWidgetView
         if (snapshot.connectionState == ConnectionState.done) {
           return Image.network(
             snapshot.data!.primaryImage,
+            key: Key(index.toString()),
             loadingBuilder: (context, child, loadingProgress) {
               if (loadingProgress == null) return child;
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             },
           );
         } else {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );
