@@ -33,10 +33,7 @@ class _MalteSocialsView
     return Scaffold(
       endDrawer: HobbyNavigation(),
       appBar: AppBar(
-        title: InkWell(
-          onTap: () => Navigator.pushNamed(context, '/'),
-          child: const Text("Swipe in Menu from the right"),
-        ),
+        title: const Text("Swipe in Menu from the right"),
       ),
       body: SingleChildScrollView(
         controller: state._controller,

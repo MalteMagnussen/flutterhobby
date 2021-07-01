@@ -80,10 +80,7 @@ class _SortImageWidgetView
     return Scaffold(
       endDrawer: HobbyNavigation(),
       appBar: AppBar(
-        title: InkWell(
-          onTap: () => Navigator.pushNamed(context, '/'),
-          child: const Text("Sort your photos"),
-        ),
+        title: const Text("Sort your photos"),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,

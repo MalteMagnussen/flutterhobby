@@ -88,10 +88,7 @@ class _GuessMyAgeView
     return Scaffold(
       endDrawer: HobbyNavigation(),
       appBar: AppBar(
-        title: InkWell(
-          onTap: () => Navigator.pushNamed(context, '/'),
-          child: const Text("Malte Hviid-Magnussen - Hobby Projects"),
-        ),
+        title: const Text("Guess your age"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
