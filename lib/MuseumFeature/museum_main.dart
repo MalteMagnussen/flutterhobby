@@ -17,7 +17,7 @@ class _MuseumWidgetController extends State<MuseumWidget> {
 
   final PageController pageController = PageController(
     keepPage: true,
-    initialPage: 1,
+    initialPage: 0,
   );
 
   @override
@@ -65,17 +65,24 @@ class _MuseumWidgetView
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           Artwork artwork = snapshot.data!;
-          // TODO - Let user see ArtistBio and ArtistDisplayName
           return Column(
             children: [
-              Container(
-                padding: const EdgeInsets.all(15),
-                child: Card(
-                  child: ListTile(
-                    title: Text(artwork.title),
-                    subtitle: Text(
-                        "Artist: ${artwork.artistDisplayName} ${artwork.artistDisplayBio}"
-                        "\nCreated: ${artwork.objectDate}"),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 500),
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(15),
+                  child: Card(
+                    child: ListTile(
+                      title: Text(
+                        artwork.title,
+                        textAlign: TextAlign.center,
+                      ),
+                      subtitle: Text(
+                          "${artwork.artistDisplayName}"
+                          "\n${artwork.objectDate}",
+                          textAlign: TextAlign.center),
+                    ),
                   ),
                 ),
               ),
