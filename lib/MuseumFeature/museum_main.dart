@@ -44,7 +44,7 @@ class _MuseumWidgetView
     return Scaffold(
       drawer: HobbyNavigation(),
       appBar: AppBar(
-        title: const Text("Explore Art"),
+        title: const Text("Swipe Art from The Metropolitan Museum of Art"),
       ),
       body: Center(
         child: PageView.builder(
