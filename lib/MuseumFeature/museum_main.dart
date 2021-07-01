@@ -64,13 +64,32 @@ class _MuseumWidgetView
       future: state.getPainting(index),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Image.network(
-            snapshot.data!.primaryImage,
-            key: Key(index.toString()),
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return const Center(child: CircularProgressIndicator());
-            },
+          Artwork artwork = snapshot.data!;
+          // TODO - Let user see ArtistBio and ArtistDisplayName
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(15),
+                child: Card(
+                  child: ListTile(
+                    title: Text(artwork.title),
+                    subtitle: Text(
+                        "Artist: ${artwork.artistDisplayName} ${artwork.artistDisplayBio}"
+                        "\nCreated: ${artwork.objectDate}"),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Image.network(
+                  artwork.primaryImage,
+                  key: Key(index.toString()),
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ),
+            ],
           );
         } else {
           return const Center(child: CircularProgressIndicator());

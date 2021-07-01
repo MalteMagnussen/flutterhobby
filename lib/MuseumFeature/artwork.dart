@@ -3,20 +3,26 @@ class Artwork {
   String primaryImage;
   String artistDisplayName;
   String artistDisplayBio;
+  String title;
+  String objectDate;
 
   Artwork(
+    this.title,
     this.objectID,
     this.primaryImage,
     this.artistDisplayName,
     this.artistDisplayBio,
+    this.objectDate,
   );
 
   factory Artwork.fromJson(Map<String, dynamic> json) {
     Artwork artwork = Artwork(
+      json['title'],
       json['objectID'],
       json['primaryImage'],
       json['artistDisplayName'],
       json['artistDisplayBio'],
+      json['objectDate'],
     );
     return artwork;
   }
