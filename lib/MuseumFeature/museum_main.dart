@@ -38,7 +38,7 @@ class _MuseumWidgetController extends State<MuseumWidget> {
 class _MuseumWidgetView
     extends WidgetView<MuseumWidget, _MuseumWidgetController> {
   _MuseumWidgetView(_MuseumWidgetController state) : super(state);
-
+// TODO - Let user search or something.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
