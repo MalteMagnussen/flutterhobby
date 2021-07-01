@@ -13,37 +13,21 @@ class MuseumWidget extends StatefulWidget {
 }
 
 class _MuseumWidgetController extends State<MuseumWidget> {
-  late Future<Artwork> artwork;
-  Random random = Random();
+  late Future<List<int>> ids;
+  final PageController pageController = PageController(
+    keepPage: true,
+    initialPage: 1,
+  );
 
   @override
   void initState() {
-    artwork = randomImage();
+    ids = fetchPaintingsIds("\"\"");
     super.initState();
   }
 
-  Future<bool> evictImage(String imageURL) async {
-    final NetworkImage provider = NetworkImage(imageURL);
-    return await provider.evict();
-  }
-
-  Future<int> getRandomImageID([String search = "\"\""]) async {
-    // TODO - Save this list of ID's, instead of fetching every time.
-    List<int> ids = await fetchPaintingsIds(search);
-    return ids.elementAt(random.nextInt(ids.length - 1));
-  }
-
-  Future<Artwork> randomImage() async {
-    Artwork art = await fetchArtwork(
-      await getRandomImageID(),
-    );
-    return art;
-  }
-
-  void newRandomImage() {
-    setState(() {
-      artwork = randomImage();
-    });
+  Future<Artwork> getPainting(int index) async {
+    List<int> _ids = await ids;
+    return await fetchArtwork(_ids.elementAt(index));
   }
 
   @override
@@ -57,31 +41,47 @@ class _MuseumWidgetView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: HobbyNavigation(),
-      appBar: AppBar(
-        title: const Text("Explore Art"),
-      ),
-      body: Center(
-        child: FutureBuilder<Artwork>(
-          future: state.artwork,
-          builder: (context, snapshot) {
-            print(snapshot.connectionState);
-            if (snapshot.connectionState == ConnectionState.done) {
-              // TODO - Turn it into a PageView https://api.flutter.dev/flutter/widgets/PageView-class.html
-              return InkWell(
-                onTap: state.newRandomImage,
-                child: Image.network(snapshot.data!.primaryImage,
-                    loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const CircularProgressIndicator();
-                }),
-              );
-            } else {
-              return const CircularProgressIndicator();
-            }
-          },
+        drawer: HobbyNavigation(),
+        appBar: AppBar(
+          title: const Text("Explore Art"),
         ),
-      ),
+        body: Center(
+          child: FutureBuilder<List<int>>(
+            future: state.ids,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return PageView.builder(
+                  controller: state.pageController,
+                  allowImplicitScrolling: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildImage(index);
+                  },
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            },
+          ),
+        ));
+  }
+
+  FutureBuilder<Artwork> buildImage(int id) {
+    return FutureBuilder<Artwork>(
+      future: state.getPainting(id),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Image.network(
+            snapshot.data!.primaryImage,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return const CircularProgressIndicator();
+            },
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
     );
   }
 }
