@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         navigationPath[0]: (context) => MalteSocials(),
+        navigationPath[3]: (context) => MuseumWidget(),
         navigationPath[1]: (context) => const GuessMyAgeWidget(),
         navigationPath[2]: (context) => const SortImageWidget(),
-        navigationPath[3]: (context) => MuseumWidget(),
       },
     );
   }

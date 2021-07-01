@@ -9,9 +9,9 @@ class HobbyNavigation extends StatefulWidget {
 class _HobbyNavigationController extends State<HobbyNavigation> {
   final Map<String, String> navigationInfo = {
     "Front Page": "/",
+    "Swipe Museum Art": "/museum",
     "Guess your age": "/guessage",
     "Sort your photos": "/imagesorting",
-    "Museum": "/museum",
   };
 
   @override
