@@ -14,6 +14,7 @@ class MuseumWidget extends StatefulWidget {
 
 class _MuseumWidgetController extends State<MuseumWidget> {
   late Future<List<int>> ids;
+
   final PageController pageController = PageController(
     keepPage: true,
     initialPage: 1,
@@ -54,6 +55,7 @@ class _MuseumWidgetView
                   controller: state.pageController,
                   allowImplicitScrolling: true,
                   physics: const BouncingScrollPhysics(),
+                  itemCount: snapshot.data!.length,
                   itemBuilder: (BuildContext context, int index) {
                     return buildImage(index);
                   },
@@ -66,9 +68,9 @@ class _MuseumWidgetView
         ));
   }
 
-  FutureBuilder<Artwork> buildImage(int id) {
+  FutureBuilder<Artwork> buildImage(int index) {
     return FutureBuilder<Artwork>(
-      future: state.getPainting(id),
+      future: state.getPainting(index),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Image.network(
