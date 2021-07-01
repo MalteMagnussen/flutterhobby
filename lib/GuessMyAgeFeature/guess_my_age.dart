@@ -86,7 +86,7 @@ class _GuessMyAgeView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: HobbyNavigation(),
+      endDrawer: HobbyNavigation(),
       appBar: AppBar(
         title: InkWell(
           onTap: () => Navigator.pushNamed(context, '/'),

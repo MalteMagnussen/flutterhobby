@@ -42,7 +42,7 @@ class _MuseumWidgetView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: HobbyNavigation(),
+      endDrawer: HobbyNavigation(),
       appBar: AppBar(
         title: const Text("Swipe Art from The Metropolitan Museum of Art"),
       ),

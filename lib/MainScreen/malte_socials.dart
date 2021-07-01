@@ -31,11 +31,11 @@ class _MalteSocialsView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: HobbyNavigation(),
+      endDrawer: HobbyNavigation(),
       appBar: AppBar(
         title: InkWell(
           onTap: () => Navigator.pushNamed(context, '/'),
-          child: const Text("Malte Hviid-Magnussen - Hobby Projects"),
+          child: const Text("Swipe in Menu from the right"),
         ),
       ),
       body: SingleChildScrollView(
