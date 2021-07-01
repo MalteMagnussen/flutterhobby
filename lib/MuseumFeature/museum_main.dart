@@ -28,6 +28,7 @@ class _MuseumWidgetController extends State<MuseumWidget> {
   }
 
   Future<int> getRandomImageID([String search = "\"\""]) async {
+    // TODO - Save this list of ID's, instead of fetching every time.
     List<int> ids = await fetchPaintingsIds(search);
     return ids.elementAt(random.nextInt(ids.length - 1));
   }
