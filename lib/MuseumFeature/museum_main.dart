@@ -67,6 +67,7 @@ class _MuseumWidgetView
           builder: (context, snapshot) {
             print(snapshot.connectionState);
             if (snapshot.connectionState == ConnectionState.done) {
+              // TODO - Turn it into a PageView https://api.flutter.dev/flutter/widgets/PageView-class.html
               return InkWell(
                 onTap: state.newRandomImage,
                 child: Image.network(snapshot.data!.primaryImage,
