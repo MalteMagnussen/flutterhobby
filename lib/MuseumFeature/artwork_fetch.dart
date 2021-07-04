@@ -47,11 +47,23 @@ Future<Artwork> fetchArtwork(int objectID) async {
 }
 
 Future<List<int>> fetchPaintingsIds([String search = "\"\""]) async {
+  String searchString = "https://collectionapi.metmuseum.org/public/"
+      "collection/v1/search?"
+      "medium=Paintings&"
+      "departmentId=11&"
+      "hasImages=true&"
+      "artistOrCulture=true&"
+      "q=$search";
+  if (search == "Random paintings") {
+    searchString = "https://collectionapi.metmuseum.org/public/"
+        "collection/v1/search?"
+        "medium=Paintings&"
+        "departmentId=11&"
+        "hasImages=true&"
+        "q=\"\"";
+  }
   final response = await http.get(
-    Uri.parse(
-      "https://collectionapi.metmuseum.org/public/"
-      "collection/v1/search?medium=Paintings&departmentId=11&hasImages=true&q=$search",
-    ),
+    Uri.parse(searchString),
   );
   if (response.statusCode == 200) {
     Map<String, dynamic> json = jsonDecode(response.body);

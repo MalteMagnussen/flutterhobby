@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
@@ -14,6 +14,28 @@ class MuseumWidget extends StatefulWidget {
 
 class _MuseumWidgetController extends State<MuseumWidget> {
   late Future<List<int>> ids;
+  String search = "Rembrandt van Rijn";
+  late Future<Artwork> art;
+  final List<String> famousEuropeanPainters = [
+    "Random paintings",
+    'Vincent van Gogh',
+    // "Claude Monet",
+    // "Pablo Picasso",
+    "Pierre Auguste Renoir",
+    // "Leonardo da Vinci",
+    // "Michelangelo Buonarroti",
+    // "Raphael Sanzio da Urbino",
+    "Rembrandt van Rijn",
+    "George Seurat",
+    "Johannes Vermeer",
+    "Michelangelo Merisi da Caravaggio",
+    "Edgar Degas",
+    "Eugène Delacroix",
+    "Anthony Van Dyck",
+    "Thomas Gainsborough",
+    "Paul Gauguin",
+    "Diego Velázquez",
+  ];
 
   final PageController pageController = PageController(
     keepPage: true,
@@ -22,13 +44,23 @@ class _MuseumWidgetController extends State<MuseumWidget> {
 
   @override
   void initState() {
-    ids = fetchPaintingsIds("\"\"");
+    ids = fetchPaintingsIds(search);
+    art = Future(() => Artwork("Loading...", 0, "  ", "  ", "  ", "  "));
     super.initState();
   }
 
   Future<Artwork> getPainting(int index) async {
     List<int> _ids = await ids;
-    return await fetchArtwork(_ids.elementAt(index));
+    Future<Artwork> _art = fetchArtwork(_ids.elementAt(index));
+
+    return (await Future.wait([_art, art]))[0];
+  }
+
+  void setDropDownValue(String newValue) {
+    setState(() {
+      search = newValue;
+      ids = fetchPaintingsIds(search);
+    });
   }
 
   @override
@@ -38,7 +70,7 @@ class _MuseumWidgetController extends State<MuseumWidget> {
 class _MuseumWidgetView
     extends WidgetView<MuseumWidget, _MuseumWidgetController> {
   _MuseumWidgetView(_MuseumWidgetController state) : super(state);
-// TODO - Let user search or something.
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,13 +79,36 @@ class _MuseumWidgetView
         title: const Text("Swipe Art from The Metropolitan Museum of Art"),
       ),
       body: Center(
-        child: PageView.builder(
-          controller: state.pageController,
-          allowImplicitScrolling: true,
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) {
-            return buildImage(index);
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: DropdownButton(
+                isDense: true,
+                value: state.search,
+                onChanged: (String? newValue) {
+                  state.setDropDownValue(newValue!);
+                },
+                items: state.famousEuropeanPainters.map((String value) {
+                  return DropdownMenuItem(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: state.pageController,
+                allowImplicitScrolling: true,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (BuildContext context, int index) {
+                  return buildImage(index);
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -71,19 +126,18 @@ class _MuseumWidgetView
                 constraints: const BoxConstraints(maxWidth: 500),
                 child: Container(
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(10),
                   child: Card(
-                    child: ListTile(
-                      title: Text(
-                        artwork.title,
-                        textAlign: TextAlign.center,
-                      ),
-                      subtitle: Text(
-                          "${artwork.artistDisplayName}"
-                          "\n${artwork.objectDate}",
-                          textAlign: TextAlign.center),
+                      child: ListTile(
+                    title: Text(
+                      artwork.title,
+                      textAlign: TextAlign.center,
                     ),
-                  ),
+                    subtitle: Text(
+                        "${artwork.artistDisplayName}"
+                        "\n${artwork.objectDate}",
+                        textAlign: TextAlign.center),
+                  )),
                 ),
               ),
               Expanded(
