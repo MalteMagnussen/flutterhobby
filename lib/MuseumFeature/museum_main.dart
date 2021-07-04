@@ -87,13 +87,15 @@ class _MuseumWidgetView
                 ),
               ),
               Expanded(
-                child: Image.network(
-                  artwork.primaryImage,
-                  key: Key(index.toString()),
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
+                child: InteractiveViewer(
+                  child: Image.network(
+                    artwork.primaryImage,
+                    key: Key(index.toString()),
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
                 ),
               ),
             ],
