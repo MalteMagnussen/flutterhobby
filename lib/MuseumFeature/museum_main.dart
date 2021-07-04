@@ -88,6 +88,7 @@ class _MuseumWidgetView
               ),
               Expanded(
                 child: InteractiveViewer(
+                  maxScale: 5.0,
                   child: Image.network(
                     artwork.primaryImage,
                     key: Key(index.toString()),
