@@ -27,6 +27,8 @@ class _MuseumWidgetController extends State<MuseumWidget> {
     // "Michelangelo Buonarroti",
     // "Raphael Sanzio da Urbino",
     "Rembrandt van Rijn",
+    "Andreas Achenbach",
+    "Jean-Baptiste Pillement",
     "George Seurat",
     "Johannes Vermeer",
     "Michelangelo Merisi da Caravaggio",
@@ -151,15 +153,27 @@ class _MuseumWidgetView
                   future: state.ids,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      return PageView.builder(
-                        controller: state.pageController,
-                        allowImplicitScrolling: true,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: snapshot.data!.length,
-                        onPageChanged: (value) => state.onPageChanged(value),
-                        itemBuilder: (BuildContext context, int index) {
-                          return buildImage(index);
-                        },
+                      int length = snapshot.data!.length;
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: PageView.builder(
+                              controller: state.pageController,
+                              allowImplicitScrolling: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: length,
+                              onPageChanged: (value) =>
+                                  state.onPageChanged(value),
+                              itemBuilder: (BuildContext context, int index) {
+                                return buildImage(index);
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text("\n${state.id + 1} of ${length + 1}"),
+                          )
+                        ],
                       );
                     } else {
                       return const Center(child: CircularProgressIndicator());
