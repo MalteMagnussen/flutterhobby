@@ -14,6 +14,7 @@ class MuseumWidget extends StatefulWidget {
 
 class _MuseumWidgetController extends State<MuseumWidget> {
   late Future<List<int>> ids;
+  late int id;
   String search = "Rembrandt van Rijn";
   late Future<Artwork> art;
   final List<String> famousEuropeanPainters = [
@@ -45,22 +46,33 @@ class _MuseumWidgetController extends State<MuseumWidget> {
   @override
   void initState() {
     ids = fetchPaintingsIds(search);
-    art = Future(() => Artwork("Loading...", 0, "  ", "  ", "  ", "  "));
+    id = 0;
+    art = onPageChanged(id);
     super.initState();
   }
 
-  Future<Artwork> getPainting(int index) async {
+  Future<Artwork> getPainting() async {
     List<int> _ids = await ids;
-    Future<Artwork> _art = fetchArtwork(_ids.elementAt(index));
-
-    return (await Future.wait([_art, art]))[0];
+    Future<Artwork> _art = fetchArtwork(_ids.elementAt(id));
+    return _art;
   }
 
   void setDropDownValue(String newValue) {
+    if (search == newValue) return;
     setState(() {
       search = newValue;
       ids = fetchPaintingsIds(search);
+      id = 0;
+      art = getPainting();
     });
+  }
+
+  Future<Artwork> onPageChanged(int _id) async {
+    setState(() {
+      id = _id;
+      art = getPainting();
+    });
+    return art;
   }
 
   @override
@@ -82,31 +94,77 @@ class _MuseumWidgetView
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: DropdownButton(
-                isDense: true,
-                value: state.search,
-                onChanged: (String? newValue) {
-                  state.setDropDownValue(newValue!);
-                },
-                items: state.famousEuropeanPainters.map((String value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: DropdownButton(
+                    isDense: false,
+                    value: state.search,
+                    onChanged: (String? newValue) {
+                      state.setDropDownValue(newValue!);
+                    },
+                    items: state.famousEuropeanPainters.map((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(10),
+                    child: Card(
+                        child: FutureBuilder<Artwork>(
+                      future: state.art,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          Artwork artwork = snapshot.data!;
+                          return ListTile(
+                            title: Text(
+                              artwork.title,
+                              textAlign: TextAlign.center,
+                            ),
+                            subtitle: Text(
+                                "${artwork.artistDisplayName}"
+                                "\n${artwork.objectDate}",
+                                textAlign: TextAlign.center),
+                          );
+                        } else {
+                          return const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                      },
+                    )),
+                  ),
+                ),
+              ],
             ),
             Expanded(
-              child: PageView.builder(
-                controller: state.pageController,
-                allowImplicitScrolling: true,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  return buildImage(index);
-                },
-              ),
+              child: FutureBuilder<List<int>>(
+                  future: state.ids,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return PageView.builder(
+                        controller: state.pageController,
+                        allowImplicitScrolling: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: snapshot.data!.length,
+                        onPageChanged: (value) => state.onPageChanged(value),
+                        itemBuilder: (BuildContext context, int index) {
+                          return buildImage(index);
+                        },
+                      );
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }),
             ),
           ],
         ),
@@ -116,44 +174,20 @@ class _MuseumWidgetView
 
   FutureBuilder<Artwork> buildImage(int index) {
     return FutureBuilder<Artwork>(
-      future: state.getPainting(index),
+      future: state.art,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           Artwork artwork = snapshot.data!;
-          return Column(
-            children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 500),
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: Card(
-                      child: ListTile(
-                    title: Text(
-                      artwork.title,
-                      textAlign: TextAlign.center,
-                    ),
-                    subtitle: Text(
-                        "${artwork.artistDisplayName}"
-                        "\n${artwork.objectDate}",
-                        textAlign: TextAlign.center),
-                  )),
-                ),
-              ),
-              Expanded(
-                child: InteractiveViewer(
-                  maxScale: 5.0,
-                  child: Image.network(
-                    artwork.primaryImage,
-                    key: Key(index.toString()),
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return const Center(child: CircularProgressIndicator());
-                    },
-                  ),
-                ),
-              ),
-            ],
+          return InteractiveViewer(
+            maxScale: 5.0,
+            child: Image.network(
+              artwork.primaryImage,
+              key: Key(index.toString()),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
           );
         } else {
           return const Center(child: CircularProgressIndicator());
