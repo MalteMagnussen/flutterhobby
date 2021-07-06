@@ -214,7 +214,7 @@ class _MuseumWidgetView
 
   FutureBuilder<Artwork> buildImage(int index) {
     return FutureBuilder<Artwork>(
-      future: state.art,
+      future: state.onPageChanged(index),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           Artwork artwork = snapshot.data!;
