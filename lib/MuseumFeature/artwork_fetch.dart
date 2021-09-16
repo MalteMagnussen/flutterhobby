@@ -5,7 +5,6 @@ import 'package:flutterhobby/MuseumFeature/build_search_string.dart';
 import 'package:http/http.dart' as http;
 
 import 'artwork.dart';
-import 'dart:math';
 
 List<int> shuffle(List<int> items) {
   var random = Random();
@@ -40,6 +39,7 @@ Future<Artwork> fetchArtwork(int objectID) async {
     Artwork artwork = Artwork.fromJson(
       jsonDecode(response.body),
     );
+    // ignore: avoid_print
     print("FETCHED IMAGE ${artwork.primaryImage}");
     return artwork;
   } else {

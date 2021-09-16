@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
 
 class HobbyNavigation extends StatefulWidget {
+  const HobbyNavigation({Key? key}) : super(key: key);
+
   @override
   _HobbyNavigationController createState() => _HobbyNavigationController();
 }

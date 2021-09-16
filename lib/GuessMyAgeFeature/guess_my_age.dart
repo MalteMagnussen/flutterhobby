@@ -86,7 +86,7 @@ class _GuessMyAgeView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: HobbyNavigation(),
+      endDrawer: const HobbyNavigation(),
       appBar: AppBar(
         title: const Text("Guess your age"),
       ),

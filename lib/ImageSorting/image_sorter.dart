@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io' show Directory, File;
+import 'dart:io' show File;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -78,7 +78,7 @@ class _SortImageWidgetView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: HobbyNavigation(),
+      endDrawer: const HobbyNavigation(),
       appBar: AppBar(
         title: const Text("Sort your photos"),
       ),
@@ -121,7 +121,7 @@ class _SortImageWidgetView
                           ? Draggable<ImageProvider<Object>>(
                               data: state.nextImage(),
                               onDragStarted: () => state.dragStarted(),
-                              feedback: Container(
+                              feedback: SizedBox(
                                 height: kIsWeb ? 320 : 400,
                                 width: kIsWeb ? 400 : 320,
                                 child:

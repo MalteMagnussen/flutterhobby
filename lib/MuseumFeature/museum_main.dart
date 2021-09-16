@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -10,13 +8,14 @@ import 'artwork.dart';
 import 'artwork_fetch.dart';
 
 class MuseumWidget extends StatefulWidget {
+  const MuseumWidget({Key? key}) : super(key: key);
+
   @override
   _MuseumWidgetController createState() => _MuseumWidgetController();
 }
 
 class _MuseumWidgetController extends State<MuseumWidget> {
   late Future<List<int>> ids;
-  late int id;
   String search = "Rembrandt van Rijn";
   late Future<Artwork> art;
   final double imageZoomScale = 10;
@@ -53,13 +52,13 @@ class _MuseumWidgetController extends State<MuseumWidget> {
   @override
   void initState() {
     ids = fetchPaintingsIds(search);
-    id = 0;
-    art = onPageChanged(id);
+    art = getArtwork(0);
     super.initState();
   }
 
-  Future<Artwork> getPainting() async {
+  Future<Artwork> getArtwork(double _id) async {
     List<int> _ids = await ids;
+    int id = _id.toInt();
     Future<Artwork> _art = fetchArtwork(_ids.elementAt(id));
     return _art;
   }
@@ -69,16 +68,12 @@ class _MuseumWidgetController extends State<MuseumWidget> {
     setState(() {
       search = newValue;
       ids = fetchPaintingsIds(search);
-      onPageChanged(0);
+      pageController.animateToPage(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
     });
-  }
-
-  Future<Artwork> onPageChanged(int _id) async {
-    setState(() {
-      id = _id;
-      art = getPainting();
-    });
-    return art;
   }
 
   @override
@@ -96,150 +91,114 @@ class _MuseumWidgetView
     media = MediaQuery.of(context);
     bool isScreenWide = media.size.width > media.size.height;
     return Scaffold(
-      endDrawer: HobbyNavigation(),
+      endDrawer: const HobbyNavigation(),
       appBar: AppBar(
-        title: const Text("Swipe Art from The Metropolitan Museum of Art"),
+        title: DropdownButton(
+          isDense: false,
+          value: state.search,
+          onChanged: (String? newValue) {
+            state.setDropDownValue(newValue!);
+          },
+          items: state.famousEuropeanPainters.map(
+            (String value) {
+              return DropdownMenuItem(
+                value: value,
+                child: Text(value),
+              );
+            },
+          ).toList(),
+        ),
       ),
       body: SafeArea(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flex(
-                direction: isScreenWide ? Axis.horizontal : Axis.vertical,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 8,
-                        left: 8,
-                        bottom: 8,
-                      ),
-                      child: DropdownButton(
-                        isDense: false,
-                        value: state.search,
-                        onChanged: (String? newValue) {
-                          state.setDropDownValue(newValue!);
-                        },
-                        items: state.famousEuropeanPainters.map(
-                          (String value) {
-                            return DropdownMenuItem(
-                              value: value,
-                              child: Text(value),
-                            );
-                          },
-                        ).toList(),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 500),
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(10),
-                        child: Card(
-                          child: FutureBuilder<Artwork>(
-                            future: state.art,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                Artwork artwork = snapshot.data!;
-                                return ListTile(
-                                  title: Text(
-                                    artwork.title,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  subtitle: Text(
-                                      "${artwork.artistDisplayName}"
-                                      "\n${artwork.objectDate}",
-                                      textAlign: TextAlign.center),
-                                );
-                              } else {
-                                return const Padding(
-                                  padding: EdgeInsets.all(12.0),
-                                  child: Center(
-                                      child: CircularProgressIndicator()),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: FutureBuilder<List<int>>(
-                  future: state.ids,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      int length = snapshot.data!.length;
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: PageView.builder(
-                              controller: state.pageController,
-                              allowImplicitScrolling: true,
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: length,
-                              onPageChanged: (value) =>
-                                  state.onPageChanged(value),
-                              itemBuilder: (BuildContext context, int index) {
-                                return buildImage(index);
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text("\n${state.id + 1} of ${length + 1}"),
-                          )
-                        ],
-                      );
-                    } else {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+          child: FutureBuilder<List<int>>(
+            future: state.ids,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                int length = snapshot.data!.length;
+                return PageView.builder(
+                  controller: state.pageController,
+                  allowImplicitScrolling: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildImage(index.toDouble(), length, isScreenWide);
                   },
-                ),
-              ),
-            ],
+                );
+              } else {
+                return const MyShimmer();
+              }
+            },
           ),
         ),
       ),
     );
   }
 
-  FutureBuilder<Artwork> buildImage(int index) {
+  FutureBuilder<Artwork> buildImage(
+      double index, int length, bool isScreenWide) {
     return FutureBuilder<Artwork>(
-      future: state.art,
+      future: state.getArtwork(index),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData) {
-            Artwork artwork = snapshot.data!;
-            return InteractiveViewer(
-              maxScale: state.imageZoomScale,
-              child: FadeInImage.memoryNetwork(
-                placeholder: kTransparentImage,
-                image: artwork.primaryImage,
-                key: Key(index.toString()),
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
+          Artwork artwork = snapshot.data!;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 500),
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: Card(
+                    child: ListTile(
+                      title: Text(
+                        artwork.title,
+                        textAlign: TextAlign.center,
+                      ),
+                      subtitle: Text(
+                          "${artwork.artistDisplayName}"
+                          "\n${artwork.objectDate}",
+                          textAlign: TextAlign.center),
+                    ),
+                  ),
+                ),
               ),
-            );
-          }
+              Expanded(
+                child: InteractiveViewer(
+                  maxScale: state.imageZoomScale,
+                  child: FadeInImage.memoryNetwork(
+                    placeholder: kTransparentImage,
+                    image: artwork.primaryImage,
+                    key: Key(index.toString()),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Text("\n${index + 1} of $length"),
+              )
+            ],
+          );
         }
-        return Shimmer.fromColors(
-          child:
-              Container(decoration: const BoxDecoration(color: Colors.black12)),
-          baseColor: Colors.black12,
-          highlightColor: Colors.white,
-        );
-
-        // const Center(child: CircularProgressIndicator());
+        return const MyShimmer();
       },
+    );
+  }
+}
+
+class MyShimmer extends StatelessWidget {
+  const MyShimmer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      child: Container(decoration: const BoxDecoration(color: Colors.black12)),
+      baseColor: Colors.black12,
+      highlightColor: Colors.white,
     );
   }
 }

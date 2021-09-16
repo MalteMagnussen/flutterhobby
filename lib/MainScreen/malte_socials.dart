@@ -9,6 +9,8 @@ import '../drawer.dart';
 // TODO Add gallery
 
 class MalteSocials extends StatefulWidget {
+  const MalteSocials({Key? key}) : super(key: key);
+
   @override
   _MalteSocialsController createState() => _MalteSocialsController();
 }
@@ -27,12 +29,12 @@ class _MalteSocialsController extends State<MalteSocials> {
 
 class _MalteSocialsView
     extends WidgetView<MalteSocials, _MalteSocialsController> {
-  _MalteSocialsView(_MalteSocialsController state) : super(state);
+  const _MalteSocialsView(_MalteSocialsController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: HobbyNavigation(),
+      endDrawer: const HobbyNavigation(),
       appBar: AppBar(
         title: const Text("Swipe in Menu from the right"),
       ),
