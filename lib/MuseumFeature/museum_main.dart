@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../drawer.dart';
 import 'artwork.dart';
@@ -214,24 +216,29 @@ class _MuseumWidgetView
 
   FutureBuilder<Artwork> buildImage(int index) {
     return FutureBuilder<Artwork>(
-      future: state.onPageChanged(index),
+      future: state.art,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          Artwork artwork = snapshot.data!;
-          return InteractiveViewer(
-            maxScale: state.imageZoomScale,
-            child: Image.network(
-              artwork.primaryImage,
-              key: Key(index.toString()),
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return const Center(child: CircularProgressIndicator());
-              },
-            ),
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
+          if (snapshot.hasData) {
+            Artwork artwork = snapshot.data!;
+            return InteractiveViewer(
+              maxScale: state.imageZoomScale,
+              child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: artwork.primaryImage,
+                key: Key(index.toString()),
+              ),
+            );
+          }
         }
+        return Shimmer.fromColors(
+          child:
+              Container(decoration: const BoxDecoration(color: Colors.black12)),
+          baseColor: Colors.black12,
+          highlightColor: Colors.white,
+        );
+
+        // const Center(child: CircularProgressIndicator());
       },
     );
   }

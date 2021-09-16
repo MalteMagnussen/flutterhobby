@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../drawer.dart';
 
@@ -44,7 +45,9 @@ class _MalteSocialsView
                 image: DecorationImage(
                   alignment: AlignmentDirectional.topCenter,
                   fit: BoxFit.cover,
-                  image: AssetImage("assets/backgroundDarkSky.jpg"),
+                  image: CachedNetworkImageProvider(
+                    "https://i.imgur.com/F2G4aJW.jpg",
+                  ),
                 ),
               ),
               child: Padding(
@@ -56,11 +59,11 @@ class _MalteSocialsView
                       const SizedBox(
                         height: 60,
                       ),
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 150,
-                        backgroundImage: const Image(
-                          image: AssetImage("assets/malte.jpg"),
-                        ).image,
+                        backgroundImage: CachedNetworkImageProvider(
+                          "https://i.imgur.com/BBsl598.jpg",
+                        ),
                       ),
                       const SizedBox(
                         height: 20,
@@ -124,8 +127,12 @@ class _MalteSocialsView
                 ),
               ),
             ),
-            VideoPlayerScreen(video: "assets/boelger.mp4"),
-            Image.asset("assets/norway.jpg"),
+            VideoPlayerScreen(video: "https://i.imgur.com/QxVpNAV.mp4"),
+            CachedNetworkImage(
+              imageUrl: "https://i.imgur.com/a5778wA.jpg",
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
           ],
         ),
       ),
@@ -151,7 +158,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     // Create an store the VideoPlayerController. The VideoPlayerController
     // offers several different constructors to play videos from assets, files,
     // or the internet.
-    _controller = VideoPlayerController.asset(widget.video);
+    _controller = VideoPlayerController.network(widget.video);
     _initializeVideoPlayerFuture = _controller.initialize().then((_) {
       setState(() {
         _controller.setVolume(0);
@@ -172,9 +179,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return // Use a FutureBuilder to display a loading spinner while waiting for the
-// VideoPlayerController to finish initializing.
-        FutureBuilder(
+    // Use a FutureBuilder to display a loading spinner while waiting for the
+    // VideoPlayerController to finish initializing.
+    return FutureBuilder(
       future: _initializeVideoPlayerFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
