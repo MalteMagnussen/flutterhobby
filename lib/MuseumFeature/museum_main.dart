@@ -226,11 +226,16 @@ class _MuseumWidgetView
               Expanded(
                 child: InteractiveViewer(
                   maxScale: state.imageZoomScale,
-                  child: FadeInImage.memoryNetwork(
-                    placeholder: kTransparentImage,
-                    image: artwork.primaryImage,
-                    key: Key(index.toString()),
-                  ),
+                  child: Stack(children: <Widget>[
+                    const Center(child: CircularProgressIndicator()),
+                    Center(
+                      child: FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: artwork.primaryImage,
+                        key: Key(index.toString()),
+                      ),
+                    ),
+                  ]),
                 ),
               ),
               Padding(

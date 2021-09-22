@@ -11,6 +11,9 @@ class PersonsAge {
 
   factory PersonsAge.fromJsonNationalize(Map<String, dynamic> json) {
     try {
+      if (json['name'] == "" || json['name'] == null) {
+        throw Exception("No one is named that in the database.");
+      }
       return PersonsAge.nameCountry(
         json['name'],
         json['country'][0]["country_id"],

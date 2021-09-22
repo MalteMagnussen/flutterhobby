@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   final List<String> navigationPath = [
     '/',
     '/guessage',
-    '/imagesorting',
+    //'/imagesorting',
     '/museum',
   ];
 
@@ -28,9 +28,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         navigationPath[0]: (context) => const MalteSocials(),
-        navigationPath[3]: (context) => const MuseumWidget(),
+        navigationPath[2]: (context) => const MuseumWidget(),
         navigationPath[1]: (context) => const GuessMyAgeWidget(),
-        navigationPath[2]: (context) => const SortImageWidget(),
+        //navigationPath[2]: (context) => const SortImageWidget(),
       },
     );
   }

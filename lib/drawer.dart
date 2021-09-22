@@ -13,7 +13,7 @@ class _HobbyNavigationController extends State<HobbyNavigation> {
     "Front Page": "/",
     "Swipe Museum Art": "/museum",
     "Guess your age": "/guessage",
-    "Sort your photos": "/imagesorting",
+    // "Sort your photos": "/imagesorting",
   };
 
   @override
