@@ -109,14 +109,10 @@ class PreviousPageIntent extends Intent {
 
 class _MuseumWidgetView
     extends WidgetView<MuseumWidget, _MuseumWidgetController> {
-  _MuseumWidgetView(_MuseumWidgetController state) : super(state);
-
-  late MediaQueryData media;
+  const _MuseumWidgetView(_MuseumWidgetController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
-    media = MediaQuery.of(context);
-    bool isScreenWide = media.size.width > media.size.height;
     return Scaffold(
       endDrawer: const HobbyNavigation(),
       appBar: AppBar(
@@ -146,9 +142,9 @@ class _MuseumWidgetView
                 return Shortcuts(
                   shortcuts: {
                     LogicalKeySet(LogicalKeyboardKey.arrowRight):
-                        NextPageIntent(),
+                        const NextPageIntent(),
                     LogicalKeySet(LogicalKeyboardKey.arrowLeft):
-                        PreviousPageIntent(),
+                        const PreviousPageIntent(),
                   },
                   child: Actions(
                     actions: <Type, Action<Intent>>{
@@ -169,8 +165,7 @@ class _MuseumWidgetView
                             physics: const BouncingScrollPhysics(),
                             itemCount: length,
                             itemBuilder: (BuildContext context, int index) {
-                              return buildImage(
-                                  index.toDouble(), length, isScreenWide);
+                              return buildImage(index.toDouble(), length);
                             },
                           ),
                           if (!state.isWebMobile)
@@ -198,8 +193,7 @@ class _MuseumWidgetView
     );
   }
 
-  FutureBuilder<Artwork> buildImage(
-      double index, int length, bool isScreenWide) {
+  FutureBuilder<Artwork> buildImage(double index, int length) {
     return FutureBuilder<Artwork>(
       future: state.getArtwork(index),
       builder: (context, snapshot) {
