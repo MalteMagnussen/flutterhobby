@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutterhobby/widget_view.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:shimmer/shimmer.dart';
@@ -6,6 +7,11 @@ import 'package:shimmer/shimmer.dart';
 import '../drawer.dart';
 import 'artwork.dart';
 import 'artwork_fetch.dart';
+import 'package:flutter/foundation.dart';
+
+/* TODO - Maybe add buttons to go the next and previous page?
+*  Current implementation doesn't allow you to swipe on PC.
+* */
 
 class MuseumWidget extends StatefulWidget {
   const MuseumWidget({Key? key}) : super(key: key);
@@ -19,6 +25,9 @@ class _MuseumWidgetController extends State<MuseumWidget> {
   String search = "Rembrandt van Rijn";
   late Future<Artwork> art;
   final double imageZoomScale = 10;
+  final isWebMobile = kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.android);
 
   final List<String> famousEuropeanPainters = [
     "Random paintings",
@@ -63,6 +72,16 @@ class _MuseumWidgetController extends State<MuseumWidget> {
     return _art;
   }
 
+  Future<void> goToNextPage() {
+    return pageController.nextPage(
+        duration: const Duration(milliseconds: 300), curve: Curves.linear);
+  }
+
+  Future<void> goToPreviousPage() {
+    return pageController.previousPage(
+        duration: const Duration(milliseconds: 300), curve: Curves.linear);
+  }
+
   void setDropDownValue(String newValue) {
     if (search == newValue) return;
     setState(() {
@@ -78,6 +97,14 @@ class _MuseumWidgetController extends State<MuseumWidget> {
 
   @override
   Widget build(BuildContext context) => _MuseumWidgetView(this);
+}
+
+class NextPageIntent extends Intent {
+  const NextPageIntent();
+}
+
+class PreviousPageIntent extends Intent {
+  const PreviousPageIntent();
 }
 
 class _MuseumWidgetView
@@ -116,17 +143,53 @@ class _MuseumWidgetView
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 int length = snapshot.data!.length;
-                return PageView.builder(
-                  controller: state.pageController,
-                  allowImplicitScrolling: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return buildImage(index.toDouble(), length, isScreenWide);
+                return Shortcuts(
+                  shortcuts: {
+                    LogicalKeySet(LogicalKeyboardKey.arrowRight):
+                        NextPageIntent(),
+                    LogicalKeySet(LogicalKeyboardKey.arrowLeft):
+                        PreviousPageIntent(),
                   },
+                  child: Actions(
+                    actions: <Type, Action<Intent>>{
+                      NextPageIntent: CallbackAction<NextPageIntent>(
+                          onInvoke: (NextPageIntent intent) =>
+                              state.goToNextPage()),
+                      PreviousPageIntent: CallbackAction<PreviousPageIntent>(
+                          onInvoke: (PreviousPageIntent intent) =>
+                              state.goToPreviousPage()),
+                    },
+                    child: Focus(
+                      autofocus: true,
+                      child: Stack(
+                        children: <Widget>[
+                          PageView.builder(
+                            controller: state.pageController,
+                            allowImplicitScrolling: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return buildImage(
+                                  index.toDouble(), length, isScreenWide);
+                            },
+                          ),
+                          if (!state.isWebMobile)
+                            MyArrow(
+                              state: state,
+                              direction: Direction.left,
+                            ),
+                          if (!state.isWebMobile)
+                            MyArrow(
+                              state: state,
+                              direction: Direction.right,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               } else {
-                return const MyShimmer();
+                return const CircularProgressIndicator();
               }
             },
           ),
@@ -182,8 +245,49 @@ class _MuseumWidgetView
             ],
           );
         }
-        return const MyShimmer();
+        return const Center(child: CircularProgressIndicator());
       },
+    );
+  }
+}
+
+enum Direction { left, right }
+
+class MyArrow extends StatelessWidget {
+  const MyArrow({
+    Key? key,
+    required this.state,
+    required this.direction,
+  }) : super(key: key);
+
+  final _MuseumWidgetController state;
+  final Direction direction;
+  final double padding = 15;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: Align(
+        alignment: direction == Direction.right
+            ? Alignment.centerRight
+            : Alignment.centerLeft,
+        child: Padding(
+          padding: direction == Direction.right
+              ? EdgeInsets.only(right: padding)
+              : EdgeInsets.only(left: padding),
+          child: IconButton(
+            iconSize: 30,
+            icon: Icon(direction == Direction.right
+                ? Icons.arrow_forward_ios
+                : Icons.arrow_back_ios),
+            onPressed: () {
+              direction == Direction.right
+                  ? state.goToNextPage()
+                  : state.goToPreviousPage();
+            },
+          ),
+        ),
+      ),
     );
   }
 }
