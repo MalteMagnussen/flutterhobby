@@ -73,14 +73,15 @@ class _MuseumWidgetController extends State<MuseumWidget> {
   }
 
   Future<void> goToNextPage() {
-    return pageController.nextPage(
-        duration: const Duration(milliseconds: 300), curve: Curves.linear);
+    return pageController.nextPage(duration: duration(), curve: Curves.ease);
   }
 
   Future<void> goToPreviousPage() {
     return pageController.previousPage(
-        duration: const Duration(milliseconds: 300), curve: Curves.linear);
+        duration: duration(), curve: Curves.ease);
   }
+
+  Duration duration() => const Duration(milliseconds: 300);
 
   void setDropDownValue(String newValue) {
     if (search == newValue) return;
@@ -89,7 +90,7 @@ class _MuseumWidgetController extends State<MuseumWidget> {
       ids = fetchPaintingsIds(search);
       pageController.animateToPage(
         0,
-        duration: const Duration(milliseconds: 300),
+        duration: duration(),
         curve: Curves.ease,
       );
     });
