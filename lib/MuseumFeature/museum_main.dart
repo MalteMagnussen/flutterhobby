@@ -9,10 +9,6 @@ import 'artwork.dart';
 import 'artwork_fetch.dart';
 import 'package:flutter/foundation.dart';
 
-/* TODO - Maybe add buttons to go the next and previous page?
-*  Current implementation doesn't allow you to swipe on PC.
-* */
-
 class MuseumWidget extends StatefulWidget {
   const MuseumWidget({Key? key}) : super(key: key);
 
