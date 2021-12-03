@@ -40,104 +40,108 @@ class _MalteSocialsView
           "Swipe in Menu from the right",
         ),
       ),
-      body: SingleChildScrollView(
-        controller: state._controller,
-        child: Column(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  alignment: AlignmentDirectional.topCenter,
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(
-                    "https://i.imgur.com/F2G4aJW.jpg",
+      body: SafeArea(
+        child: SingleChildScrollView(
+          controller: state._controller,
+          child: Column(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    // TODO - Make this a Cursor Blending https://wilsonwilson.dev/articles/flutter-hover-effect-triggers-the-definitive-guide/
+                    alignment: AlignmentDirectional.topCenter,
+                    fit: BoxFit.cover,
+                    image: CachedNetworkImageProvider(
+                      "https://i.imgur.com/F2G4aJW.jpg",
+                    ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 60,
+                        ),
+                        const CircleAvatar(
+                          radius: 150,
+                          backgroundImage: CachedNetworkImageProvider(
+                            "https://i.imgur.com/BBsl598.jpg",
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Malte Hviid-Magnussen',
+                          textScaleFactor: 4,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          state.malteText,
+                          style: Theme.of(context).textTheme.bodyText1,
+                          textScaleFactor: 2,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextButton.icon(
+                          icon: const SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Image(
+                              image: AssetImage(
+                                  "assets/GitHub-Mark-Light-64px.png"),
+                            ),
+                          ),
+                          label: Text(
+                            'GitHub',
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textScaleFactor: 1.5,
+                          ),
+                          onPressed: () => state
+                              ._launchURL("https://github.com/MalteMagnussen"),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextButton.icon(
+                          icon: const SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: Image(
+                              image: AssetImage("assets/LI-In-Bug.png"),
+                            ),
+                          ),
+                          label: Text(
+                            'LinkedIn',
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textScaleFactor: 1.5,
+                          ),
+                          onPressed: () => state._launchURL(
+                              "https://www.linkedin.com/in/maltemagnussen/"),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const SizedBox(
-                        height: 60,
-                      ),
-                      const CircleAvatar(
-                        radius: 150,
-                        backgroundImage: CachedNetworkImageProvider(
-                          "https://i.imgur.com/BBsl598.jpg",
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        'Malte Hviid-Magnussen',
-                        textScaleFactor: 4,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        state.malteText,
-                        style: Theme.of(context).textTheme.bodyText1,
-                        textScaleFactor: 2,
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextButton.icon(
-                        icon: const SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: Image(
-                            image:
-                                AssetImage("assets/GitHub-Mark-Light-64px.png"),
-                          ),
-                        ),
-                        label: Text(
-                          'GitHub',
-                          style: Theme.of(context).textTheme.bodyText1,
-                          textScaleFactor: 1.5,
-                        ),
-                        onPressed: () => state
-                            ._launchURL("https://github.com/MalteMagnussen"),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextButton.icon(
-                        icon: const SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: Image(
-                            image: AssetImage("assets/LI-In-Bug.png"),
-                          ),
-                        ),
-                        label: Text(
-                          'LinkedIn',
-                          style: Theme.of(context).textTheme.bodyText1,
-                          textScaleFactor: 1.5,
-                        ),
-                        onPressed: () => state._launchURL(
-                            "https://www.linkedin.com/in/maltemagnussen/"),
-                      )
-                    ],
-                  ),
-                ),
+              CachedNetworkImage(
+                // TODO - Make this a perspective animation https://wilsonwilson.dev/articles/flutter-hover-effect-triggers-the-definitive-guide/
+                imageUrl: "https://i.imgur.com/a5778wA.jpg",
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
-            ),
-            VideoPlayerScreen(video: "https://i.imgur.com/QxVpNAV.mp4"),
-            CachedNetworkImage(
-              imageUrl: "https://i.imgur.com/a5778wA.jpg",
-              placeholder: (context, url) => const CircularProgressIndicator(),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -159,7 +163,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   void initState() {
-    // Create an store the VideoPlayerController. The VideoPlayerController
+    // Create and store the VideoPlayerController. The VideoPlayerController
     // offers several different constructors to play videos from assets, files,
     // or the internet.
     _controller = VideoPlayerController.network(widget.video);
