@@ -10,6 +10,8 @@ import 'artwork.dart';
 import 'artwork_fetch.dart';
 import 'package:flutter/foundation.dart';
 
+// TODO - Move widgets to separate files.
+
 class MuseumWidget extends StatefulWidget {
   const MuseumWidget({Key? key}) : super(key: key);
 
@@ -330,6 +332,7 @@ class MyArrow extends StatelessWidget {
               : EdgeInsets.only(left: padding),
           child: IconButton(
             iconSize: 30,
+            // TODO - Make larger on-hover
             icon: Icon(direction == Direction.right
                 ? Icons.arrow_forward_ios
                 : Icons.arrow_back_ios),
