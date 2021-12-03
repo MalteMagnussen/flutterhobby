@@ -206,15 +206,19 @@ class _MuseumWidgetView
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
                   child: Card(
+                    // TODO - Add download button to this ListTile.
                     child: ListTile(
                       title: Text(
                         artwork.title,
                         textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.subtitle1,
                       ),
                       subtitle: Text(
-                          "${artwork.artistDisplayName}"
-                          "\n${artwork.objectDate}",
-                          textAlign: TextAlign.center),
+                        "${artwork.artistDisplayName}"
+                        "\n${artwork.objectDate}",
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),
@@ -236,12 +240,17 @@ class _MuseumWidgetView
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Text("\n${index + 1} of $length"),
+                child: Text(
+                  "\n${index + 1} of $length",
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
               )
             ],
           );
         }
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }

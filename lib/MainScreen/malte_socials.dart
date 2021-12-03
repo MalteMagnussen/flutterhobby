@@ -36,7 +36,9 @@ class _MalteSocialsView
     return Scaffold(
       endDrawer: const HobbyNavigation(),
       appBar: AppBar(
-        title: const Text("Swipe in Menu from the right"),
+        title: const Text(
+          "Swipe in Menu from the right",
+        ),
       ),
       body: SingleChildScrollView(
         controller: state._controller,
