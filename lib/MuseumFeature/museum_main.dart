@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutterhobby/widget_view.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:shimmer/shimmer.dart';
+import 'dart:html' as html;
 
 import '../drawer.dart';
 import 'artwork.dart';
@@ -20,7 +21,7 @@ class _MuseumWidgetController extends State<MuseumWidget> {
   late Future<List<int>> ids;
   String search = "Rembrandt van Rijn";
   late Future<Artwork> art;
-  final double imageZoomScale = 10;
+
   final isWebMobile = kIsWeb &&
       (defaultTargetPlatform == TargetPlatform.iOS ||
           defaultTargetPlatform == TargetPlatform.android);
@@ -200,43 +201,9 @@ class _MuseumWidgetView
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 500),
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(10),
-                  child: Card(
-                    // TODO - Add download button to this ListTile.
-                    child: ListTile(
-                      title: Text(
-                        artwork.title,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.subtitle1,
-                      ),
-                      subtitle: Text(
-                        "${artwork.artistDisplayName}"
-                        "\n${artwork.objectDate}",
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              MuseumLabelWidget(artwork: artwork),
               Expanded(
-                child: InteractiveViewer(
-                  maxScale: state.imageZoomScale,
-                  child: Stack(children: <Widget>[
-                    const Center(child: CircularProgressIndicator()),
-                    Center(
-                      child: FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
-                        image: artwork.primaryImage,
-                        key: Key(index.toString()),
-                      ),
-                    ),
-                  ]),
-                ),
+                child: MuseumImageViewer(state: state, artwork: artwork),
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -252,6 +219,87 @@ class _MuseumWidgetView
           child: CircularProgressIndicator(),
         );
       },
+    );
+  }
+}
+
+class MuseumLabelWidget extends StatefulWidget {
+  final Artwork artwork;
+
+  const MuseumLabelWidget({
+    Key? key,
+    required this.artwork,
+  }) : super(key: key);
+
+  @override
+  _MuseumLabelWidgetState createState() => _MuseumLabelWidgetState();
+}
+
+class _MuseumLabelWidgetState extends State<MuseumLabelWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 500),
+      child: AnimatedContainer(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.only(
+          top: 10,
+          bottom: 10,
+        ),
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.ease,
+        child: Card(
+          child: ListTile(
+            onTap: () => html.window.open(widget.artwork.primaryImage, ""),
+            horizontalTitleGap: 10,
+            leading: const Icon(
+              Icons.download,
+              semanticLabel: "Download this Painting.",
+            ),
+            mouseCursor: SystemMouseCursors.click,
+            title: Text(
+              widget.artwork.title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            subtitle: Text(
+              "${widget.artwork.artistDisplayName}"
+              "\n${widget.artwork.objectDate}",
+              style: Theme.of(context).textTheme.bodyText2,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MuseumImageViewer extends StatelessWidget {
+  const MuseumImageViewer({
+    Key? key,
+    required this.state,
+    required this.artwork,
+  }) : super(key: key);
+
+  final _MuseumWidgetController state;
+  final Artwork artwork;
+  final double imageZoomScale = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    return InteractiveViewer(
+      maxScale: imageZoomScale,
+      child: Stack(children: <Widget>[
+        const Center(child: CircularProgressIndicator()),
+        Center(
+          child: FadeInImage.memoryNetwork(
+            placeholder: kTransparentImage,
+            image: artwork.primaryImage,
+            key: Key(artwork.objectID.toString()),
+          ),
+        ),
+      ]),
     );
   }
 }
