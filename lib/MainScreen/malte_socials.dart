@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/MainScreen/profile_picture.dart';
 import 'package:flutterhobby/widget_view.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../drawer.dart';
 import 'my_text_button.dart';
@@ -17,10 +16,6 @@ class MalteSocials extends StatefulWidget {
 }
 
 class _MalteSocialsController extends State<MalteSocials> {
-  void _launchURL(_url) async => await canLaunch(_url)
-      ? await launch(_url)
-      : throw 'Could not launch $_url';
-
   final ScrollController _controller = ScrollController();
   String malteText = 'Flutter. Sailing.\nSecurity. DevOps.';
 
