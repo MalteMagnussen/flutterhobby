@@ -5,7 +5,12 @@ import 'apod_model.dart';
 
 import '../drawer.dart';
 
-// https://apodapi.herokuapp.com/
+// TODO - Add a button to change the date
+// TODO - Add explanation text
+// TODO - Add copyright text
+// TODO - Add title text
+// TODO - Add cool animations and effects
+
 class NasaWidget extends StatefulWidget {
   const NasaWidget({Key? key}) : super(key: key);
 
