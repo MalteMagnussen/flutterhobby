@@ -16,7 +16,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => null,
+      onTap: () {},
       mouseCursor: SystemMouseCursors.basic,
       onHover: (hovering) => {
         setState(() {
