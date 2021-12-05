@@ -10,6 +10,8 @@ import 'artwork.dart';
 import 'artwork_fetch.dart';
 import 'package:flutter/foundation.dart';
 
+import 'label.dart';
+
 // TODO - Move widgets to separate files.
 
 class MuseumWidget extends StatefulWidget {
@@ -48,8 +50,8 @@ class _MuseumWidgetController extends State<MuseumWidget> {
     "Paul Gauguin",
     "Alphonse-Marie-Adolphe de Neuville",
     "Diego Velázquez",
-    //"Leonardo da Vinci",
-    //"Raphael Sanzio da Urbino",
+    // "Leonardo da Vinci",
+    // "Raphael Sanzio da Urbino",
   ];
 
   final PageController pageController = PageController(
@@ -221,58 +223,6 @@ class _MuseumWidgetView
           child: CircularProgressIndicator(),
         );
       },
-    );
-  }
-}
-
-class MuseumLabelWidget extends StatefulWidget {
-  final Artwork artwork;
-
-  const MuseumLabelWidget({
-    Key? key,
-    required this.artwork,
-  }) : super(key: key);
-
-  @override
-  _MuseumLabelWidgetState createState() => _MuseumLabelWidgetState();
-}
-
-class _MuseumLabelWidgetState extends State<MuseumLabelWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 500),
-      child: AnimatedContainer(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.only(
-          top: 10,
-          bottom: 10,
-        ),
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.ease,
-        child: Card(
-          child: ListTile(
-            onTap: () => html.window.open(widget.artwork.primaryImage, ""),
-            horizontalTitleGap: 10,
-            leading: const Icon(
-              Icons.download,
-              semanticLabel: "Download this Painting.",
-            ),
-            mouseCursor: SystemMouseCursors.click,
-            title: Text(
-              widget.artwork.title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-            subtitle: Text(
-              "${widget.artwork.artistDisplayName}"
-              "\n${widget.artwork.objectDate}",
-              style: Theme.of(context).textTheme.bodyText2,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
