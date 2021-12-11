@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterhobby/GalleryComponents/label.dart';
 import 'package:flutterhobby/widget_view.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:shimmer/shimmer.dart';
@@ -9,8 +10,6 @@ import '../drawer.dart';
 import 'artwork.dart';
 import 'artwork_fetch.dart';
 import 'package:flutter/foundation.dart';
-
-import 'label.dart';
 
 // TODO - Move widgets to separate files.
 
@@ -205,7 +204,11 @@ class _MuseumWidgetView
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MuseumLabelWidget(artwork: artwork),
+              LabelWidget(
+                title: artwork.title,
+                subtitle: "${artwork.artistDisplayBio}\n${artwork.objectDate}",
+                image: artwork.primaryImage,
+              ),
               Expanded(
                 child: MuseumImageViewer(state: state, artwork: artwork),
               ),

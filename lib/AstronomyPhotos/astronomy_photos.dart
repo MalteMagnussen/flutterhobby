@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterhobby/AstronomyPhotos/label.dart';
+import 'package:flutterhobby/GalleryComponents/label.dart';
 import 'apod_fetch.dart';
 import 'apod_model.dart';
 
