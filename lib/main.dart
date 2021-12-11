@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "Malte Hviid-Magnussen",
       theme: ThemeData.dark(),
-      initialRoute: '/nasa',
+      initialRoute: '/',
       routes: {
         navigationPath[0]: (context) => const MalteSocials(),
         navigationPath[1]: (context) => const MuseumWidget(),
