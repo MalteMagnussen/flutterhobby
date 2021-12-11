@@ -6,6 +6,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'dart:html' as html;
 
+import '../GalleryComponents/galleryKeyboardShortcuts.dart';
 import '../GalleryComponents/pageViewArrow.dart';
 import '../drawer.dart';
 import 'artwork.dart';
@@ -73,15 +74,6 @@ class _MuseumWidgetController extends State<MuseumWidget> {
     return _art;
   }
 
-  Future<void> goToNextPage() {
-    return pageController.nextPage(duration: duration(), curve: Curves.ease);
-  }
-
-  Future<void> goToPreviousPage() {
-    return pageController.previousPage(
-        duration: duration(), curve: Curves.ease);
-  }
-
   Duration duration() => const Duration(milliseconds: 300);
 
   void setDropDownValue(String newValue) {
@@ -141,47 +133,32 @@ class _MuseumWidgetView
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 int length = snapshot.data!.length;
-                return Shortcuts(
-                  shortcuts: {
-                    LogicalKeySet(LogicalKeyboardKey.arrowRight):
-                        const NextPageIntent(),
-                    LogicalKeySet(LogicalKeyboardKey.arrowLeft):
-                        const PreviousPageIntent(),
-                  },
-                  child: Actions(
-                    actions: <Type, Action<Intent>>{
-                      NextPageIntent: CallbackAction<NextPageIntent>(
-                          onInvoke: (NextPageIntent intent) =>
-                              state.goToNextPage()),
-                      PreviousPageIntent: CallbackAction<PreviousPageIntent>(
-                          onInvoke: (PreviousPageIntent intent) =>
-                              state.goToPreviousPage()),
-                    },
-                    child: Focus(
-                      autofocus: true,
-                      child: Stack(
-                        children: <Widget>[
-                          PageView.builder(
-                            controller: state.pageController,
-                            allowImplicitScrolling: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return buildImage(index.toDouble(), length);
-                            },
+                return GalleryKeyboardShortcuts(
+                  pageController: state.pageController,
+                  child: Focus(
+                    autofocus: true,
+                    child: Stack(
+                      children: <Widget>[
+                        PageView.builder(
+                          controller: state.pageController,
+                          allowImplicitScrolling: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return buildImage(index.toDouble(), length);
+                          },
+                        ),
+                        if (!state.isWebMobile)
+                          MyArrow(
+                            pageController: state.pageController,
+                            direction: Direction.left,
                           ),
-                          if (!state.isWebMobile)
-                            MyArrow(
-                              pageController: state.pageController,
-                              direction: Direction.left,
-                            ),
-                          if (!state.isWebMobile)
-                            MyArrow(
-                              pageController: state.pageController,
-                              direction: Direction.right,
-                            ),
-                        ],
-                      ),
+                        if (!state.isWebMobile)
+                          MyArrow(
+                            pageController: state.pageController,
+                            direction: Direction.right,
+                          ),
+                      ],
                     ),
                   ),
                 );
