@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'dart:html' as html;
 
-import 'artwork.dart';
+class LabelWidget extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final String image;
 
-class MuseumLabelWidget extends StatefulWidget {
-  final Artwork artwork;
-
-  const MuseumLabelWidget({
+  const LabelWidget({
     Key? key,
-    required this.artwork,
+    required this.title,
+    required this.subtitle,
+    required this.image,
   }) : super(key: key);
 
   @override
-  _MuseumLabelWidgetState createState() => _MuseumLabelWidgetState();
+  _LabelWidgetState createState() => _LabelWidgetState();
 }
 
-class _MuseumLabelWidgetState extends State<MuseumLabelWidget> {
+class _LabelWidgetState extends State<LabelWidget> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 500),
+      constraints: const BoxConstraints(maxWidth: 800),
       child: AnimatedContainer(
         alignment: Alignment.center,
         padding: const EdgeInsets.only(
@@ -30,21 +32,19 @@ class _MuseumLabelWidgetState extends State<MuseumLabelWidget> {
         curve: Curves.ease,
         child: Card(
           child: ListTile(
-            onTap: () => html.window.open(widget.artwork.primaryImage, ""),
+            onTap: () => html.window.open(widget.image, ""),
             horizontalTitleGap: 10,
             leading: const Icon(
               Icons.download,
-              semanticLabel: "Download this Painting.",
             ),
             mouseCursor: SystemMouseCursors.click,
             title: Text(
-              widget.artwork.title,
+              widget.title,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.subtitle1,
             ),
             subtitle: Text(
-              "${widget.artwork.artistDisplayName}"
-              "\n${widget.artwork.objectDate}",
+              widget.subtitle,
               style: Theme.of(context).textTheme.bodyText2,
               textAlign: TextAlign.center,
             ),
