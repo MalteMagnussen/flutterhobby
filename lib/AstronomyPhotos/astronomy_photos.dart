@@ -39,45 +39,44 @@ class _NasaWidgetState extends State<NasaWidget> {
         title: const Text('NASA Images'),
       ),
       body: SafeArea(
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                FutureBuilder<Apod>(
-                  future: apod,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Column(
-                        children: [
-                          LabelWidget(
-                            title: snapshot.data!.title,
-                            subtitle: snapshot.data!.explanation,
-                            image: snapshot.data!.hdurl,
-                          ),
-                          Image.network(
-                            snapshot.data!.hdurl,
-                            fit: BoxFit.cover,
-                          ),
-                          Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Copyright: " + snapshot.data!.copyright,
-                              ),
+        child: Center(
+          child: Container(
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              color: Colors.black,
+            ),
+            child: SingleChildScrollView(
+              child: FutureBuilder<Apod>(
+                future: apod,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        LabelWidget(
+                          title: snapshot.data!.title,
+                          subtitle: snapshot.data!.explanation,
+                          image: snapshot.data!.hdurl,
+                        ),
+                        Image.network(
+                          snapshot.data!.hdurl,
+                          fit: BoxFit.cover,
+                        ),
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "Copyright: " + snapshot.data!.copyright,
                             ),
                           ),
-                        ],
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return const CircularProgressIndicator();
-                  },
-                ),
-              ],
+                        ),
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
             ),
           ),
         ),
