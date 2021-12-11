@@ -628,3 +628,4 @@ fabric.properties
 .idea/libraries/Flutter_Plugins.xml
 .idea/libraries/Dart_SDK.xml
 .idea/libraries/Flutter_Plugins.xml
+lib/AstronomyPhotos/apod_fetch.dart

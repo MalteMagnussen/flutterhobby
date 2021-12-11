@@ -1,14 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhobby/AstronomyPhotos/label.dart';
 import 'apod_fetch.dart';
 import 'apod_model.dart';
 
 import '../drawer.dart';
 
-// TODO - Add a button to change the date
-// TODO - Add explanation text
-// TODO - Add copyright text
-// TODO - Add title text
+// TODO - Refactor Museum and Astronomy Photos to use the same code.
 // TODO - Add cool animations and effects
 
 class NasaWidget extends StatefulWidget {
@@ -19,8 +17,6 @@ class NasaWidget extends StatefulWidget {
 }
 
 class _NasaWidgetState extends State<NasaWidget> {
-  Offset mousePosition = Offset.zero;
-  bool isHovering = false;
   late Future<Apod> apod;
 
   @override
@@ -37,50 +33,46 @@ class _NasaWidgetState extends State<NasaWidget> {
         title: const Text('NASA Images'),
       ),
       body: SafeArea(
-        child: MouseRegion(
-          cursor: SystemMouseCursors.none,
-          onHover: (PointerHoverEvent details) {
-            setState(() {
-              mousePosition = details.localPosition;
-            });
-          },
-          child: Stack(
-            children: <Widget>[
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                FutureBuilder<Apod>(
+                  future: apod,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        children: [
+                          LabelWidget(
+                            title: snapshot.data!.title,
+                            subtitle: snapshot.data!.explanation,
+                            image: snapshot.data!.hdurl,
+                          ),
+                          Image.network(
+                            snapshot.data!.hdurl,
+                            fit: BoxFit.cover,
+                          ),
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Copyright: " + snapshot.data!.copyright,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return const CircularProgressIndicator();
+                  },
                 ),
-                child: Center(
-                  child: FutureBuilder<Apod>(
-                    future: apod,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Image.network(
-                          snapshot.data!.hdurl,
-                          fit: BoxFit.cover,
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      return const CircularProgressIndicator();
-                    },
-                  ),
-                ),
-              ),
-              Positioned(
-                top: mousePosition.dy - 3,
-                left: mousePosition.dx - 3,
-                child: AnimatedContainer(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(200),
-                    color: Colors.white,
-                  ),
-                  width: isHovering ? 50 : 10,
-                  height: isHovering ? 50 : 10,
-                  duration: const Duration(milliseconds: 200),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

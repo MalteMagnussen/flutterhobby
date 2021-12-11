@@ -12,6 +12,7 @@ class _HobbyNavigationController extends State<HobbyNavigation> {
   final Map<String, String> navigationInfo = {
     "Front Page": "/",
     "Swipe Museum Art": "/museum",
+    "NASA Astronomy Picture of the Day": "/apod",
     //"Guess your age": "/guessage",
     // "Sort your photos": "/imagesorting",
   };
