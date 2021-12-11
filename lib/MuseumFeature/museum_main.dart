@@ -6,6 +6,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'dart:html' as html;
 
+import '../GalleryComponents/pageViewArrow.dart';
 import '../drawer.dart';
 import 'artwork.dart';
 import 'artwork_fetch.dart';
@@ -171,12 +172,12 @@ class _MuseumWidgetView
                           ),
                           if (!state.isWebMobile)
                             MyArrow(
-                              state: state,
+                              pageController: state.pageController,
                               direction: Direction.left,
                             ),
                           if (!state.isWebMobile)
                             MyArrow(
-                              state: state,
+                              pageController: state.pageController,
                               direction: Direction.right,
                             ),
                         ],
@@ -255,48 +256,6 @@ class MuseumImageViewer extends StatelessWidget {
           ),
         ),
       ]),
-    );
-  }
-}
-
-enum Direction { left, right }
-
-class MyArrow extends StatelessWidget {
-  const MyArrow({
-    Key? key,
-    required this.state,
-    required this.direction,
-  }) : super(key: key);
-
-  final _MuseumWidgetController state;
-  final Direction direction;
-  final double padding = 15;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Align(
-        alignment: direction == Direction.right
-            ? Alignment.centerRight
-            : Alignment.centerLeft,
-        child: Padding(
-          padding: direction == Direction.right
-              ? EdgeInsets.only(right: padding)
-              : EdgeInsets.only(left: padding),
-          child: IconButton(
-            iconSize: 30,
-            // TODO - Make larger on-hover
-            icon: Icon(direction == Direction.right
-                ? Icons.arrow_forward_ios
-                : Icons.arrow_back_ios),
-            onPressed: () {
-              direction == Direction.right
-                  ? state.goToNextPage()
-                  : state.goToPreviousPage();
-            },
-          ),
-        ),
-      ),
     );
   }
 }
