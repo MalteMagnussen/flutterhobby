@@ -21,10 +21,6 @@ class GalleryWrapper extends StatefulWidget {
 }
 
 class _GalleryWrapperState extends State<GalleryWrapper> {
-  final isWebMobile = kIsWeb &&
-      (defaultTargetPlatform == TargetPlatform.iOS ||
-          defaultTargetPlatform == TargetPlatform.android);
-
   @override
   Widget build(BuildContext context) {
     return GalleryKeyboardShortcuts(
@@ -45,16 +41,14 @@ class _GalleryWrapperState extends State<GalleryWrapper> {
                 );
               },
             ),
-            if (!isWebMobile)
-              MyArrow(
-                pageController: widget.pageController,
-                direction: Direction.left,
-              ),
-            if (!isWebMobile)
-              MyArrow(
-                pageController: widget.pageController,
-                direction: Direction.right,
-              ),
+            MyArrow(
+              pageController: widget.pageController,
+              direction: Direction.left,
+            ),
+            MyArrow(
+              pageController: widget.pageController,
+              direction: Direction.right,
+            ),
           ],
         ),
       ),
