@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutterhobby/GalleryComponents/gallery_wrapper.dart';
 import 'package:flutterhobby/GalleryComponents/label.dart';
 import 'package:flutterhobby/widget_view.dart';
-import 'package:transparent_image/transparent_image.dart';
-import 'package:shimmer/shimmer.dart';
-import 'dart:html' as html;
-
-import '../GalleryComponents/galleryKeyboardShortcuts.dart';
-import '../GalleryComponents/pageViewArrow.dart';
 import '../drawer.dart';
 import 'artwork.dart';
 import 'artwork_fetch.dart';
 import 'package:flutter/foundation.dart';
 
-// TODO - Move widgets to separate files.
+import 'museum_image_viewer.dart';
 
 class MuseumWidget extends StatefulWidget {
   const MuseumWidget({Key? key}) : super(key: key);
@@ -93,14 +87,6 @@ class _MuseumWidgetController extends State<MuseumWidget> {
   Widget build(BuildContext context) => _MuseumWidgetView(this);
 }
 
-class NextPageIntent extends Intent {
-  const NextPageIntent();
-}
-
-class PreviousPageIntent extends Intent {
-  const PreviousPageIntent();
-}
-
 class _MuseumWidgetView
     extends WidgetView<MuseumWidget, _MuseumWidgetController> {
   const _MuseumWidgetView(_MuseumWidgetController state) : super(state);
@@ -133,34 +119,10 @@ class _MuseumWidgetView
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 int length = snapshot.data!.length;
-                return GalleryKeyboardShortcuts(
+                return GalleryWrapper(
                   pageController: state.pageController,
-                  child: Focus(
-                    autofocus: true,
-                    child: Stack(
-                      children: <Widget>[
-                        PageView.builder(
-                          controller: state.pageController,
-                          allowImplicitScrolling: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return buildImage(index.toDouble(), length);
-                          },
-                        ),
-                        if (!state.isWebMobile)
-                          MyArrow(
-                            pageController: state.pageController,
-                            direction: Direction.left,
-                          ),
-                        if (!state.isWebMobile)
-                          MyArrow(
-                            pageController: state.pageController,
-                            direction: Direction.right,
-                          ),
-                      ],
-                    ),
-                  ),
+                  length: length,
+                  pageViewItemBuilder: buildImage,
                 );
               } else {
                 return const CircularProgressIndicator();
@@ -182,13 +144,15 @@ class _MuseumWidgetView
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              LabelWidget(
+              Label(
                 title: artwork.title,
                 subtitle: "${artwork.artistDisplayBio}\n${artwork.objectDate}",
                 image: artwork.primaryImage,
               ),
               Expanded(
-                child: MuseumImageViewer(state: state, artwork: artwork),
+                child: MuseumImageViewer(
+                  imageUrl: artwork.primaryImage,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -204,50 +168,6 @@ class _MuseumWidgetView
           child: CircularProgressIndicator(),
         );
       },
-    );
-  }
-}
-
-class MuseumImageViewer extends StatelessWidget {
-  const MuseumImageViewer({
-    Key? key,
-    required this.state,
-    required this.artwork,
-  }) : super(key: key);
-
-  final _MuseumWidgetController state;
-  final Artwork artwork;
-  final double imageZoomScale = 10;
-
-  @override
-  Widget build(BuildContext context) {
-    return InteractiveViewer(
-      maxScale: imageZoomScale,
-      child: Stack(children: <Widget>[
-        const Center(child: CircularProgressIndicator()),
-        Center(
-          child: FadeInImage.memoryNetwork(
-            placeholder: kTransparentImage,
-            image: artwork.primaryImage,
-            key: Key(artwork.objectID.toString()),
-          ),
-        ),
-      ]),
-    );
-  }
-}
-
-class MyShimmer extends StatelessWidget {
-  const MyShimmer({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      child: Container(decoration: const BoxDecoration(color: Colors.black12)),
-      baseColor: Colors.black12,
-      highlightColor: Colors.white,
     );
   }
 }

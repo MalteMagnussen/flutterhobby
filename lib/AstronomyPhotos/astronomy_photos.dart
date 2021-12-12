@@ -1,8 +1,12 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterhobby/GalleryComponents/gallery_wrapper.dart';
 import 'package:flutterhobby/GalleryComponents/label.dart';
+import 'package:flutterhobby/MuseumFeature/museum_image_viewer.dart';
 import 'apod_fetch.dart';
 import 'apod_model.dart';
+import 'apod_helpers.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'youtube_parser.dart';
 
 import '../drawer.dart';
 
@@ -31,6 +35,11 @@ class _NasaWidgetState extends State<NasaWidget> {
     super.initState();
   }
 
+  final PageController pageController = PageController(
+    keepPage: true,
+    initialPage: 0,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,42 +54,70 @@ class _NasaWidgetState extends State<NasaWidget> {
             decoration: const BoxDecoration(
               color: Colors.black,
             ),
-            child: SingleChildScrollView(
-              child: FutureBuilder<Apod>(
-                future: apod,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                      children: [
-                        LabelWidget(
-                          title: snapshot.data!.title,
-                          subtitle: snapshot.data!.explanation,
-                          image: snapshot.data!.hdurl,
-                        ),
-                        Image.network(
-                          snapshot.data!.hdurl,
-                          fit: BoxFit.cover,
-                        ),
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Copyright: " + snapshot.data!.copyright,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
-                  return const CircularProgressIndicator();
-                },
-              ),
+            child: GalleryWrapper(
+              pageController: pageController,
+              length: 0,
+              pageViewItemBuilder: buildImage,
             ),
           ),
         ),
       ),
     );
+  }
+
+  FutureBuilder<Apod> buildImage(double index, int length) {
+    ApodHelpers helpers = ApodHelpers();
+    return FutureBuilder<Apod>(
+      future: fetchAPOD(
+        helpers.subtractDays(
+          DateTime.now(),
+          index.toInt(),
+        ),
+      ),
+      builder: (BuildContext context, AsyncSnapshot<Apod> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasData) {
+          Apod apod = snapshot.data!;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Label(
+                image: apod.hdurl,
+                title: apod.title,
+                subtitle: apod.explanation,
+              ),
+              Expanded(
+                child: buildApodContent(apod),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Copyright: " + apod.copyright,
+                ),
+              ),
+            ],
+          );
+        } else if (snapshot.hasError) {
+          return Center(child: Text('${snapshot.error}'));
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  Widget buildApodContent(Apod apod) {
+    if (apod.mediaType == 'image') {
+      return MuseumImageViewer(
+        imageUrl: apod.hdurl,
+      );
+    } else {
+      YoutubePlayerController _controller = YoutubePlayerController(
+        initialVideoId: convertUrlToId(apod.url)!,
+      );
+      return YoutubePlayerIFrame(
+        controller: _controller,
+        aspectRatio: 16 / 9,
+      );
+    }
   }
 }

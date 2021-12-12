@@ -22,9 +22,9 @@ class Apod {
       json['media_type'] as String,
       json['title'] as String,
       json['url'] as String,
-      json['hdurl'] as String,
+      json['hdurl'] == null ? "No HD image" : json['hdurl'] as String,
       json['explanation'] as String,
-      json['copyright'] as String,
+      json['copyright'] == null ? "No copyright" : json['copyright'] as String,
       json['date'] as String,
     );
   }
