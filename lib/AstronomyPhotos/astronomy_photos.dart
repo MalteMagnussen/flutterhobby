@@ -78,24 +78,27 @@ class _NasaWidgetState extends State<NasaWidget> {
         if (snapshot.connectionState == ConnectionState.done &&
             snapshot.hasData) {
           Apod apod = snapshot.data!;
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Label(
-                image: apod.hdurl,
-                title: apod.title,
-                subtitle: apod.explanation,
-              ),
-              Expanded(
-                child: buildApodContent(apod),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Copyright: " + apod.copyright,
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Label(
+                  image: apod.mediaType == "image" ? apod.hdurl : apod.url,
+                  title: apod.title,
+                  subtitle: apod.explanation,
                 ),
-              ),
-            ],
+                Flexible(
+                  child: buildApodContent(apod),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Copyright: " + apod.copyright,
+                  ),
+                ),
+              ],
+            ),
           );
         } else if (snapshot.hasError) {
           return Center(child: Text('${snapshot.error}'));
@@ -114,9 +117,11 @@ class _NasaWidgetState extends State<NasaWidget> {
       YoutubePlayerController _controller = YoutubePlayerController(
         initialVideoId: convertUrlToId(apod.url)!,
       );
-      return YoutubePlayerIFrame(
-        controller: _controller,
-        aspectRatio: 16 / 9,
+      return Center(
+        child: YoutubePlayerIFrame(
+          controller: _controller,
+          aspectRatio: 16 / 9,
+        ),
       );
     }
   }

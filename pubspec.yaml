@@ -30,6 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.3
+  freezed_annotation: any
   cupertino_icons: ^1.0.2
   url_launcher: ^6.0.7
   image_picker: ^0.8.1+1
@@ -42,6 +43,7 @@ dependencies:
   youtube_player_iframe: ^2.2.2
 
 dev_dependencies:
+  freezed: any
   flutter_test:
     sdk: flutter
 

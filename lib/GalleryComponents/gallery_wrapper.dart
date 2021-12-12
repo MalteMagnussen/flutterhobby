@@ -36,7 +36,7 @@ class _GalleryWrapperState extends State<GalleryWrapper> {
             PageView.builder(
               controller: widget.pageController,
               allowImplicitScrolling: true,
-              physics: const BouncingScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: widget.length == 0 ? null : widget.length,
               itemBuilder: (BuildContext context, int index) {
                 return widget.pageViewItemBuilder(

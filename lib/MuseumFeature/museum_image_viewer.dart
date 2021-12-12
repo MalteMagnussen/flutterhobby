@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class MuseumImageViewer extends StatelessWidget {
   const MuseumImageViewer({
@@ -12,18 +12,14 @@ class MuseumImageViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveViewer(
-      maxScale: imageZoomScale,
-      child: Stack(children: <Widget>[
-        const Center(child: CircularProgressIndicator()),
-        Center(
-          child: FadeInImage.memoryNetwork(
-            placeholder: kTransparentImage,
-            image: imageUrl,
-            key: Key(imageUrl),
-          ),
-        ),
-      ]),
+    return Center(
+      child: CachedNetworkImage(
+        fadeOutDuration: const Duration(milliseconds: 0),
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        imageUrl: imageUrl,
+        key: Key(imageUrl),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
     );
   }
 }
