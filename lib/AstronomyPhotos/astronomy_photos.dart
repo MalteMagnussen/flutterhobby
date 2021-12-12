@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/GalleryComponents/gallery_wrapper.dart';
 import 'package:flutterhobby/GalleryComponents/label.dart';
@@ -7,7 +6,7 @@ import 'apod_fetch.dart';
 import 'apod_model.dart';
 import 'apod_helpers.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-import 'package:youtube_parser/youtube_parser.dart';
+import 'youtube_parser.dart';
 
 import '../drawer.dart';
 
@@ -113,7 +112,7 @@ class _NasaWidgetState extends State<NasaWidget> {
       );
     } else {
       YoutubePlayerController _controller = YoutubePlayerController(
-        initialVideoId: apod.url,
+        initialVideoId: convertUrlToId(apod.url)!,
       );
       return YoutubePlayerIFrame(
         controller: _controller,
