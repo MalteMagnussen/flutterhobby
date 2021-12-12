@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'apod_model.dart';
-
 class ApodHelpers {
   DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
   DateTime today = DateTime.now();

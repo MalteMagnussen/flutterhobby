@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'artwork.dart';
 
 class MuseumImageViewer extends StatelessWidget {
   const MuseumImageViewer({
     Key? key,
-    required this.artwork,
+    required this.imageUrl,
   }) : super(key: key);
 
-  final Artwork artwork;
+  final String imageUrl;
   final double imageZoomScale = 10;
 
   @override
@@ -20,8 +19,8 @@ class MuseumImageViewer extends StatelessWidget {
         Center(
           child: FadeInImage.memoryNetwork(
             placeholder: kTransparentImage,
-            image: artwork.primaryImage,
-            key: Key(artwork.objectID.toString()),
+            image: imageUrl,
+            key: Key(imageUrl),
           ),
         ),
       ]),

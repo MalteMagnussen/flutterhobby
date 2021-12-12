@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutterhobby/GalleryComponents/gallery_wrapper.dart';
 import 'package:flutterhobby/GalleryComponents/label.dart';
 import 'package:flutterhobby/widget_view.dart';
-import 'package:transparent_image/transparent_image.dart';
-import 'package:shimmer/shimmer.dart';
-import 'dart:html' as html;
-
-import '../GalleryComponents/gallery_keyboard_shortcuts.dart';
-import '../GalleryComponents/page_view_arrow.dart';
 import '../drawer.dart';
 import 'artwork.dart';
 import 'artwork_fetch.dart';
@@ -151,13 +144,15 @@ class _MuseumWidgetView
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              LabelWidget(
+              Label(
                 title: artwork.title,
                 subtitle: "${artwork.artistDisplayBio}\n${artwork.objectDate}",
                 image: artwork.primaryImage,
               ),
               Expanded(
-                child: MuseumImageViewer(artwork: artwork),
+                child: MuseumImageViewer(
+                  imageUrl: artwork.primaryImage,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/MainScreen/malte_socials.dart';
 import 'package:flutterhobby/MuseumFeature/museum_main.dart';
-
-import 'GuessMyAgeFeature/guess_my_age.dart';
-import 'ImageSorting/image_sorter.dart';
 import 'AstronomyPhotos/astronomy_photos.dart';
 
 void main() {

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:html' as html;
 
-class LabelWidget extends StatefulWidget {
+class Label extends StatefulWidget {
   final String title;
   final String subtitle;
   final String image;
 
-  const LabelWidget({
+  const Label({
     Key? key,
     required this.title,
     required this.subtitle,
@@ -14,10 +14,10 @@ class LabelWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _LabelWidgetState createState() => _LabelWidgetState();
+  _LabelState createState() => _LabelState();
 }
 
-class _LabelWidgetState extends State<LabelWidget> {
+class _LabelState extends State<Label> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
