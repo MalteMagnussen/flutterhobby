@@ -45,38 +45,43 @@ class _NasaWidgetState extends State<NasaWidget> {
             decoration: const BoxDecoration(
               color: Colors.black,
             ),
-            child: SingleChildScrollView(
-              child: FutureBuilder<Apod>(
-                future: apod,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Column(
-                      children: [
-                        LabelWidget(
-                          title: snapshot.data!.title,
-                          subtitle: snapshot.data!.explanation,
-                          image: snapshot.data!.hdurl,
-                        ),
-                        Image.network(
-                          snapshot.data!.hdurl,
-                          fit: BoxFit.cover,
-                        ),
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Copyright: " + snapshot.data!.copyright,
+            child: PageView.builder(
+              // reverse: true,
+              itemBuilder: (BuildContext context, int index) {
+                return SingleChildScrollView(
+                  child: FutureBuilder<Apod>(
+                    future: apod,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: [
+                            LabelWidget(
+                              title: snapshot.data!.title,
+                              subtitle: snapshot.data!.explanation,
+                              image: snapshot.data!.hdurl,
                             ),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
-                  return const CircularProgressIndicator();
-                },
-              ),
+                            Image.network(
+                              snapshot.data!.hdurl,
+                              fit: BoxFit.cover,
+                            ),
+                            Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Copyright: " + snapshot.data!.copyright,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("${snapshot.error}");
+                      }
+                      return const CircularProgressIndicator();
+                    },
+                  ),
+                );
+              },
             ),
           ),
         ),
