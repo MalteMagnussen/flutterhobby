@@ -7,17 +7,7 @@ import 'apod_model.dart';
 import 'apod_helpers.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'youtube_parser.dart';
-
 import '../drawer.dart';
-
-// TODO - Refactor Museum and Astronomy Photos to use the same code.
-// use https://api.flutter.dev/flutter/dart-core/DateTime-class.html for date
-// use DateTime.add(Duration) to add days to date
-// use DateTime.subtract(Duration) to subtract days from date
-// Do that for going left and right. Don't allow user to go right, if Date is Today.
-// Don't allow user to go left or right, if they're at the end or beginning of the museum images.
-// https://api.flutter.dev/flutter/dart-core/Duration-class.html for Duration
-// TODO - Add cool animations and effects
 
 class NasaWidget extends StatefulWidget {
   const NasaWidget({Key? key}) : super(key: key);
