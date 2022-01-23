@@ -69,6 +69,7 @@ class _NasaWidgetState extends State<NasaWidget> {
             snapshot.hasData) {
           Apod apod = snapshot.data!;
           return SingleChildScrollView(
+            controller: ScrollController(),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,

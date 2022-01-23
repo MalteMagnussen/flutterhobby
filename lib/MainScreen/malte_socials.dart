@@ -13,7 +13,6 @@ class MalteSocials extends StatefulWidget {
 }
 
 class _MalteSocialsController extends State<MalteSocials> {
-  final ScrollController _controller = ScrollController();
   String malteText = 'Flutter. Sailing.\nSecurity. DevOps.';
 
   @override
@@ -35,7 +34,6 @@ class _MalteSocialsView
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          controller: state._controller,
           child: Column(
             children: [
               Container(

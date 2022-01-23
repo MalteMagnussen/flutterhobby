@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterhobby/widget_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HobbyNavigation extends StatefulWidget {
   const HobbyNavigation({Key? key}) : super(key: key);
@@ -29,6 +31,7 @@ class _HobbyNavigationView
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
+        controller: ScrollController(),
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -36,37 +39,51 @@ class _HobbyNavigationView
             decoration: BoxDecoration(),
             child: Text(''),
           ),
-          for (String key in state.navigationInfo.keys)
-            DrawerListTile(
-              navigationPath: state.navigationInfo[key],
-              navigationText: key,
+          ListTile(
+            title: const Text(
+              "Front Page",
+              textScaleFactor: 1.5,
             ),
+            onTap: () {
+              Navigator.pushNamed(context, "/");
+            },
+          ),
+          ListTile(
+            title: const Text(
+              "Museum Art",
+              textScaleFactor: 1.5,
+            ),
+            onTap: () {
+              Navigator.pushNamed(context, "/museum");
+            },
+            subtitle: const Text("Swipe art from the MET"),
+          ),
+          ListTile(
+            title: const Text(
+              "NASA",
+              textScaleFactor: 1.5,
+            ),
+            onTap: () {
+              Navigator.pushNamed(context, "/nasa");
+            },
+            subtitle: const Text(
+              'Astronomy Picture of the Day',
+              style: TextStyle(fontSize: 12),
+            ),
+          ),
+          ListTile(
+            onTap: () => launch("https://astokholm.github.io/"),
+            title: const Text(
+              "CV Website",
+              textScaleFactor: 1.5,
+            ),
+            subtitle: const Text(
+              'I made this for a friend.',
+              style: TextStyle(fontSize: 12),
+            ),
+          ),
         ],
       ),
-    );
-  }
-}
-
-class DrawerListTile extends StatelessWidget {
-  const DrawerListTile({
-    Key? key,
-    required this.navigationPath,
-    required this.navigationText,
-  }) : super(key: key);
-
-  final String navigationText;
-  final String? navigationPath;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        navigationText,
-        textScaleFactor: 1.5,
-      ),
-      onTap: () {
-        Navigator.pushNamed(context, navigationPath!);
-      },
     );
   }
 }
